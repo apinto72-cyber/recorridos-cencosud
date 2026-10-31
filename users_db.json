@@ -1,0 +1,24 @@
+{
+  "admin": {
+    "username": "admin",
+    "nombre": "Administrador General",
+    "rol": "admin",
+    "activo": true,
+    "password_hash": "c1e7b719ef9bf6af851a35138652cfe1d99eb1a52d39c81fdc63c4dd4cea4fcc",
+    "salt": "a7e7ca8b6b95eb182baf36deb4951a3b",
+    "token_version": 1,
+    "creado_en": "2026-10-31 00:44",
+    "ultimo_acceso": "31/10/2026 01:05"
+  },
+  "e.maldonado@newlead.cl": {
+    "username": "e.maldonado@newlead.cl",
+    "nombre": "coordinador",
+    "rol": "operador",
+    "activo": true,
+    "password_hash": "d12112e99506feaa196cbd39cb4c9af8f108e8f11b8b616c56c477ad153b04b4",
+    "salt": "6ff46d1933654c4d760d3b841cbc8d7e",
+    "token_version": 1,
+    "creado_en": "31/10/2026 01:04",
+    "ultimo_acceso": "Nunca"
+  }
+}
