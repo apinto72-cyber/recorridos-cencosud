@@ -1,0 +1,22 @@
+﻿# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de datos locales y pruebas con datos sensibles
+*.xlsx
+!TIPIFICACIONES_CENCOSUD_FINAL.xlsx
+*.csv
+*.zip
+Incidencias_Exportadas_*/
+test_*.py
+create_files.py
+read_db.py
+check_*.py
+analyze.py
+compare_*.py
+extracted.txt
+
+# Entornos virtuales
+.venv/
+env/
