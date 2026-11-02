@@ -652,18 +652,6 @@ with tab_export:
             use_container_width=True
         )
 
-        out_folder = os.path.join(CURRENT_DIR, f"Incidencias_Exportadas_{dominant_date}")
-        if st.button(f"💾 Guardar los {len(manifest)} archivos en carpeta local (PC)", use_container_width=True):
-            os.makedirs(out_folder, exist_ok=True)
-            for m in manifest:
-                file_dest = os.path.join(out_folder, m["archivo"])
-                with open(file_dest, "wb") as f_out:
-                    f_out.write(m["csv_bytes"])
-            st.success(f"✅ Archivos guardados en:\n`{out_folder}`")
-            try:
-                subprocess.Popen(f'explorer "{out_folder}"')
-            except Exception:
-                pass
 
         st.markdown("<br/>", unsafe_allow_html=True)
         st.markdown('<div class="nl-panel-header">Control de Validación por Prefijo (3 Dígitos)</div>', unsafe_allow_html=True)
