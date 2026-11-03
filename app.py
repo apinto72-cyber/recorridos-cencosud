@@ -6,7 +6,6 @@ Incluye Control de Acceso por Roles (Administrador / Operador) y Revocación Ins
 import os
 import io
 import base64
-import subprocess
 import importlib
 import streamlit as st
 import pandas as pd
@@ -407,9 +406,9 @@ with st.container():
 
     with c_up1:
         recorridos_file = st.file_uploader(
-            "📥 1. Subir Informe de Llamadas / Recorridos (.xlsx, .xls, .csv)",
+            "📥 1. Subir INFORME DE LLAMADAS OUTBOUND (.xlsx, .xls, .csv)",
             type=["xlsx", "xls", "csv"],
-            help="Arrastra aquí el reporte consolidado de llamadas exportado de Vicidial."
+            help="Arrastra aquí el INFORME DE LLAMADAS OUTBOUND exportado de Vicidial."
         )
 
     with c_up2:
@@ -435,14 +434,14 @@ if recorridos_file is None:
     st.markdown("""
     <div class="nl-panel" style="text-align:center; padding: 36px 20px;">
         <div class="nl-tag-blue">ESPERANDO ARCHIVO DE ORIGEN</div>
-        <div style="font-size:18px; font-weight:800; color:#092340; margin-top:6px;">Sube el archivo de Recorridos en el panel superior para iniciar el procesamiento</div>
+        <div style="font-size:18px; font-weight:800; color:#092340; margin-top:6px;">Sube el INFORME DE LLAMADAS OUTBOUND en el panel superior para iniciar el procesamiento</div>
         <div style="font-size:13.5px; color:#64748B; margin-top:6px;">El sistema detectará automáticamente las campañas, validará los prefijos de 3 dígitos y descartará cualquier fila con celdas en blanco.</div>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
 
 try:
-    with st.spinner("Sincronizando y leyendo base de recorridos..."):
+    with st.spinner("Sincronizando y leyendo INFORME DE LLAMADAS OUTBOUND..."): 
         df_recorridos = load_recorridos_file(recorridos_file)
 
     if use_default_tip and os.path.exists(DEFAULT_TIP_FILE):
