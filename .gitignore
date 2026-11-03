@@ -5,7 +5,7 @@ __pycache__/
 
 # Archivos de datos locales y pruebas con datos sensibles
 *.xlsx
-!TIPIFICACIONES_CENCOSUD_FINAL.xlsx
+!Recorrido_Cencosud/TIPIFICACIONES_CENCOSUD_FINAL.xlsx
 *.csv
 *.zip
 Incidencias_Exportadas_*/
@@ -17,11 +17,9 @@ analyze.py
 compare_*.py
 extracted.txt
 
-# Archivos externos de otros proyectos
-transbank-extractor/
+# Carpetas de otros recorridos independientes (no Cencosud)
+Recorrido_Transbank/
 iniciar_transbank.bat
-compilar_ejecutable.bat
-Program.cs
 
 # Entornos virtuales
 .venv/
