@@ -17,6 +17,12 @@ analyze.py
 compare_*.py
 extracted.txt
 
+# Archivos externos de otros proyectos
+transbank-extractor/
+iniciar_transbank.bat
+compilar_ejecutable.bat
+Program.cs
+
 # Entornos virtuales
 .venv/
 env/
