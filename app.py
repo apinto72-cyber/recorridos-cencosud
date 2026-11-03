@@ -1,7 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 """
 Aplicación Web/Escritorio para Homologación y Exportación de Recorridos - Newlead Contact Center.
-Incluye Control de Acceso por Roles (Administrador / Operador) y Revocación Instantánea de Permisos.
 """
 import os
 import io
@@ -11,9 +10,7 @@ import streamlit as st
 import pandas as pd
 
 import processor
-import auth
 importlib.reload(processor)
-importlib.reload(auth)
 
 from processor import (
     load_recorridos_file,
@@ -27,15 +24,6 @@ from processor import (
     export_selected_campaigns_zip,
     CAMPAIGN_REGISTRY,
     CAMPAIGN_PREFIX_MAP
-)
-from auth import (
-    authenticate_user,
-    is_session_valid,
-    list_all_users,
-    create_new_user,
-    set_user_active_status,
-    change_user_password,
-    delete_user_account
 )
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -151,73 +139,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 # ==============================================================================
-# CONTROL DE SESIÓN Y AUTENTICACIÓN CORPORATIVA
-# ==============================================================================
-if "auth_user" not in st.session_state:
-    st.session_state["auth_user"] = None
-if "show_users_panel" not in st.session_state:
-    st.session_state["show_users_panel"] = False
-if "show_pwd_panel" not in st.session_state:
-    st.session_state["show_pwd_panel"] = False
-
-if st.session_state["auth_user"] is not None:
-    u_info = st.session_state["auth_user"]
-    if not is_session_valid(u_info["username"], u_info.get("token_version", 1)):
-        st.session_state["auth_user"] = None
-        st.session_state["revoked_msg"] = "⚠️ Tu sesión ha sido cerrada porque tus permisos o contraseña fueron actualizados por el Administrador."
-
-if st.session_state["auth_user"] is None:
-    _, col_login, _ = st.columns([1.1, 1.4, 1.1])
-    with col_login:
-        st.markdown(f"""
-        <div class="nl-login-card">
-            <div class="nl-login-banner">
-                <div style="display:flex; justify-content:center; margin-bottom:14px;">
-                    {logo_html}
-                </div>
-                <div style="font-size:22px; font-weight:800; letter-spacing:-0.3px;">Acceso Corporativo · Newlead</div>
-                <div style="font-size:13px; color:#D2E9F6; margin-top:4px;">Procesador Operacional de Recorridos Cencosud</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        if st.session_state.get("revoked_msg"):
-            st.error(st.session_state["revoked_msg"])
-            st.session_state["revoked_msg"] = None
-
-        with st.form("login_form", clear_on_submit=False):
-            st.markdown("##### 🔐 Ingresa tus credenciales autorizadas")
-            in_user = st.text_input("Usuario", placeholder="Ej: admin")
-            in_pass = st.text_input("Contraseña", type="password", placeholder="••••••••••••")
-            btn_submit = st.form_submit_button("Ingresar al Sistema", type="primary", use_container_width=True)
-
-            if btn_submit:
-                ok, msg, user_data = authenticate_user(in_user, in_pass)
-                if ok and user_data:
-                    st.session_state["auth_user"] = user_data
-                    st.session_state["show_users_panel"] = False
-                    st.session_state["show_pwd_panel"] = False
-                    st.rerun()
-                else:
-                    st.error(msg)
-
-        st.markdown("""
-        <div style="text-align:center; font-size:12px; color:#64748B; margin-top:10px;">
-            🔒 Acceso restringido exclusivamente a personal autorizado de <b>Newlead Contact Center</b>.<br/>
-            Si necesitas acceso o restablecer tu clave, contacta al Administrador General.
-        </div>
-        """, unsafe_allow_html=True)
-    st.stop()
-
-current_user = st.session_state["auth_user"]
-is_admin = current_user.get("rol") == "admin"
-rol_badge_html = (
-    '<span class="nl-badge-green">👑 ADMINISTRADOR - ACCESO TOTAL</span>'
-    if is_admin
-    else '<span class="nl-badge-glass">👤 OPERADOR AUTORIZADO</span>'
-)
-
-# 1. HERO HEADER BANNER
+# 1. HERO HEADER BANNER (Con logo Newlead Contact Center)
 st.markdown(f"""
 <div class="nl-hero">
     <div class="nl-hero-left">
@@ -228,166 +150,14 @@ st.markdown(f"""
         </div>
     </div>
     <div class="nl-hero-right">
-        {rol_badge_html}
-        <span class="nl-badge-glass">👤 {current_user['nombre']} ({current_user['username']})</span>
+        <span class="nl-badge-green">⚡ MOTOR DE VALIDACIÓN ACTIVO</span>
+        <span class="nl-badge-glass">📋 CENCOSUD · VICIDIAL</span>
         <span class="nl-badge-glass">🔒 CERO CELDAS EN BLANCO</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-if is_admin:
-    tb_col1, tb_col2, tb_col3, tb_col4 = st.columns([4.8, 1.3, 1.3, 1.0])
-    with tb_col2:
-        lbl_usr = "✖ Cerrar Usuarios" if st.session_state["show_users_panel"] else "⚙️ Usuarios y Permisos"
-        if st.button(lbl_usr, use_container_width=True):
-            st.session_state["show_users_panel"] = not st.session_state["show_users_panel"]
-            st.session_state["show_pwd_panel"] = False
-            st.rerun()
-    with tb_col3:
-        lbl_pwd = "✖ Cerrar Clave" if st.session_state["show_pwd_panel"] else "🔑 Cambiar Clave"
-        if st.button(lbl_pwd, use_container_width=True):
-            st.session_state["show_pwd_panel"] = not st.session_state["show_pwd_panel"]
-            st.session_state["show_users_panel"] = False
-            st.rerun()
-    with tb_col4:
-        if st.button("🚪 Salir", use_container_width=True):
-            st.session_state["auth_user"] = None
-            st.rerun()
-else:
-    tb_col1, tb_col2, tb_col3 = st.columns([6.1, 1.3, 1.0])
-    with tb_col2:
-        lbl_pwd = "✖ Cerrar Clave" if st.session_state["show_pwd_panel"] else "🔑 Cambiar Clave"
-        if st.button(lbl_pwd, use_container_width=True):
-            st.session_state["show_pwd_panel"] = not st.session_state["show_pwd_panel"]
-            st.rerun()
-    with tb_col3:
-        if st.button("🚪 Salir", use_container_width=True):
-            st.session_state["auth_user"] = None
-            st.rerun()
 
-if st.session_state["show_pwd_panel"]:
-    with st.container():
-        st.markdown('<div class="nl-panel-header">🔑 Cambiar Mi Contraseña de Acceso</div>', unsafe_allow_html=True)
-        with st.form("change_own_pwd_form"):
-            cp1, cp2, cp3 = st.columns([2, 2, 1.2])
-            with cp1:
-                new_p1 = st.text_input("Nueva Contraseña (mínimo 6 caracteres)", type="password")
-            with cp2:
-                new_p2 = st.text_input("Confirmar Nueva Contraseña", type="password")
-            with cp3:
-                st.write("")
-                sub_pwd = st.form_submit_button("Guardar Nueva Clave", type="primary", use_container_width=True)
-
-            if sub_pwd:
-                if new_p1 != new_p2:
-                    st.error("Las contraseñas no coinciden.")
-                else:
-                    ok_p, msg_p, new_ver = change_user_password(current_user["username"], new_p1)
-                    if ok_p:
-                        st.session_state["auth_user"]["token_version"] = new_ver
-                        st.success(msg_p)
-                    else:
-                        st.error(msg_p)
-        st.markdown("---")
-
-if is_admin and st.session_state["show_users_panel"]:
-    with st.container():
-        st.markdown('<div class="nl-panel-header">⚙️ Administración de Usuarios y Control de Acceso (Ex-trabajadores / Permisos)</div>', unsafe_allow_html=True)
-        st.info("💡 **¿Alguien se fue de la empresa?** Haz clic en **🚫 Bloquear Acceso** o **🗑️ Eliminar** junto a su usuario. Su sesión se cerrará en el acto y no podrá volver a entrar aunque tenga el enlace web.")
-
-        u_col_list, u_col_new = st.columns([2.1, 1.3])
-
-        with u_col_list:
-            st.markdown("##### 👥 Usuarios Registrados")
-            users_list = list_all_users()
-            for u in users_list:
-                u_name = u["username"]
-                is_active = u["activo"]
-                rol_txt = "👑 ADMIN" if u["rol"] == "admin" else "👤 OPERADOR"
-                status_badge = (
-                    '<span class="nl-tag-green">🟢 ACTIVO</span>'
-                    if is_active
-                    else '<span class="nl-tag-red">🚫 ACCESO BLOQUEADO</span>'
-                )
-
-                c_info, c_act1, c_act2 = st.columns([2.6, 1.2, 1.0])
-                with c_info:
-                    st.markdown(f"""
-                    <div class="nl-subcard" style="padding:10px 14px; margin-bottom:8px;">
-                        <div><span class="nl-tag-blue">{rol_txt}</span> {status_badge}</div>
-                        <div style="font-size:14px; font-weight:800; color:#092340;">{u['nombre']} (<code>{u_name}</code>)</div>
-                        <div style="font-size:11.5px; color:#64748B;">Último ingreso: {u['ultimo_acceso']}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-                with c_act1:
-                    st.write("")
-                    if u_name != "admin":
-                        if is_active:
-                            if st.button("🚫 Bloquear Acceso", key=f"blk_{u_name}", use_container_width=True):
-                                ok_b, msg_b = set_user_active_status(u_name, False)
-                                if ok_b:
-                                    st.warning(msg_b)
-                                    st.rerun()
-                                else:
-                                    st.error(msg_b)
-                        else:
-                            if st.button("✅ Reactivar", key=f"unblk_{u_name}", use_container_width=True):
-                                ok_b, msg_b = set_user_active_status(u_name, True)
-                                if ok_b:
-                                    st.success(msg_b)
-                                    st.rerun()
-                                else:
-                                    st.error(msg_b)
-                    else:
-                        st.caption("🔒 Cuenta Principal")
-
-                with c_act2:
-                    st.write("")
-                    if u_name != "admin" and u_name != current_user["username"]:
-                        if st.button("🗑️ Eliminar", key=f"del_{u_name}", use_container_width=True):
-                            ok_d, msg_d = delete_user_account(u_name, current_user["username"])
-                            if ok_d:
-                                st.success(msg_d)
-                                st.rerun()
-                            else:
-                                st.error(msg_d)
-
-        with u_col_new:
-            st.markdown("##### ➕ Crear Nuevo Usuario Autorizado")
-            with st.form("create_user_form", clear_on_submit=True):
-                nu_user = st.text_input("Usuario de ingreso (sin espacios)", placeholder="Ej: jperez")
-                nu_name = st.text_input("Nombre y Apellido / Cargo", placeholder="Ej: Juan Pérez - Analista")
-                nu_pass = st.text_input("Contraseña asignada (mín. 6 caracteres)", type="password")
-                nu_rol = st.selectbox(
-                    "Nivel de Permiso",
-                    options=["operador", "admin"],
-                    format_func=lambda r: "👤 Operador (Solo procesar y descargar)" if r == "operador" else "👑 Administrador (Control total y usuarios)"
-                )
-                btn_create = st.form_submit_button("➕ Crear Usuario", type="primary", use_container_width=True)
-                if btn_create:
-                    ok_c, msg_c = create_new_user(nu_user, nu_name, nu_pass, nu_rol)
-                    if ok_c:
-                        st.success(msg_c)
-                        st.rerun()
-                    else:
-                        st.error(msg_c)
-
-            st.markdown("##### 🔄 Restablecer Clave de un Usuario")
-            with st.form("reset_other_pwd_form", clear_on_submit=True):
-                user_options = [u["username"] for u in users_list]
-                target_u = st.selectbox("Seleccionar usuario", options=user_options)
-                reset_p = st.text_input("Nueva contraseña", type="password")
-                btn_reset = st.form_submit_button("Actualizar Contraseña", use_container_width=True)
-                if btn_reset:
-                    ok_r, msg_r, new_v = change_user_password(target_u, reset_p)
-                    if ok_r:
-                        if target_u == current_user["username"]:
-                            st.session_state["auth_user"]["token_version"] = new_v
-                        st.success(msg_r)
-                    else:
-                        st.error(msg_r)
-        st.markdown("---")
 # 2. BARRA DE ESTADO OPERACIONAL
 st.markdown("""
 <div class="nl-status-bar">
