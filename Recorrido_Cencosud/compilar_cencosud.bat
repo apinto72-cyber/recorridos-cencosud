@@ -31,7 +31,6 @@ if errorlevel 1 (
 )
 
 echo.
-copy /y Newlead-Cencosud.exe ..\Newlead-Cencosud.exe > nul
 echo [2/2] Compilacion completada exitosamente!
 echo Archivo generado en: Newlead-Cencosud.exe
 echo.

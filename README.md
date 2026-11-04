@@ -1,21 +1,37 @@
-﻿# Procesador de Recorridos y Homologador de Incidencias
+# Newlead Contact Center · Sistema Multi-Recorridos
 
-Aplicación de escritorio / web local para procesar informes de recorridos telefónicos (Vicidial) y generar archivos CSV de incidencias homologadas por campaña.
+Repositorio organizado para el procesamiento, homologación y extracción de recorridos telefónicos de Newlead Contact Center.
+
+Cada cliente y servicio opera en su propia carpeta independiente y autónoma, con su propia aplicación nativa de escritorio para Windows (100% offline y sin dependencias de servidor).
+
+---
+
+## 📁 Estructura del Proyecto
+
+`	ext
+Recorridos/
+│
+├── 📁 Recorrido_Cencosud/       -> Módulo operacional para recorridos Cencosud
+│   ├── Newlead-Cencosud.exe     -> Aplicación ejecutable standalone para Windows
+│   ├── index.html, app.js       -> Motor cliente de homologación y reglas de negocio
+│   ├── iniciar_cencosud.bat     -> Script de inicio rápido
+│   └── compilar_cencosud.bat    -> Compilador nativo C# (csc.exe)
+│
+├── 📁 Recorrido_Transbank/      -> Módulo operacional para recorridos Transbank
+│   ├── Newlead-Transbank.exe    -> Aplicación ejecutable standalone para Windows
+│   ├── index.html, app.js       -> Motor cliente de homologación Transbank
+│   └── iniciar_transbank.bat    -> Script de inicio rápido
+│
+├── 📁 Recorrido_Mapfre/         -> Módulo operacional para recorridos Mapfre
+│   ├── Recorrido-Mapfre.exe     -> Aplicación ejecutable standalone para Windows
+│   ├── index.html, app.js       -> Motor cliente de homologación Mapfre
+│   └── iniciar_mapfre.bat       -> Script de inicio rápido
+│
+└── Iniciar_Recorridos.bat       -> Menú maestro interactivo para seleccionar cualquier recorrido
+`
+
+---
 
 ## 🚀 Inicio Rápido
-1. Haz doble clic en el archivo **`iniciar_aplicacion.bat`**.
-2. Se abrirá automáticamente la aplicación en tu navegador web (`http://localhost:8501`).
-
-## 📁 Archivos Soportados
-* **Archivo de Recorridos:** Excel (`.xlsx`, `.xls`) o CSV con el reporte de llamadas.
-* **Diccionario de Homologación:** `TIPIFICACIONES_CENCOSUD_FINAL.xlsx` (se detecta automáticamente de la carpeta).
-
-## ⚙️ Reglas de Negocio Implementadas
-* **Selección de Campañas:** Permite seleccionar uno o varios IDs de campaña (ejemplo: campañas `91` y `107` combinadas).
-* **Renombrado Automático de Archivos:** Genera el nombre con la fecha de gestión detectada (ej. `Incidencia_Cencosud_EEFF_TZ_20261029.csv`), permitiendo editarlo antes de descargar.
-* **Formato de Fechas:**
-  * `FECHA DE GESTIÓN`: formato **`YYYY-MM-DD`**.
-  * `FECHALLAMADA`: formato **`DD-MM-YYYY`**.
-* **Llamadas con fin vacío:** Si la hora de fin de llamada está vacía, se iguala automáticamente a la hora de inicio y la duración se fija en `0`.
-* **Mapeo de Usuarios:** Marcador automático (`VDAD`) se homologa como ejecutivo `1`.
-* **Exportación CSV:** Delimitado por punto y coma (`;`), codificado en UTF-8 con BOM (`utf-8-sig`) con las 13 columnas requeridas.
+- **Menú Central:** Haz doble clic en Iniciar_Recorridos.bat para seleccionar entre Cencosud, Transbank o Mapfre.
+- **Acceso Individual:** Entra a la carpeta correspondiente e inicia el archivo ejecutable o script correspondiente.
