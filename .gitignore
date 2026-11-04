@@ -20,6 +20,8 @@ extracted.txt
 # Carpetas de otros recorridos independientes (no Cencosud)
 Recorrido_Transbank/
 iniciar_transbank.bat
+Recorrido_Mapfre/
+iniciar_mapfre.bat
 
 # Entornos virtuales
 .venv/
