@@ -1,0 +1,207 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newlead · Procesador Operacional de Recorridos Cencosud</title>
+  <link rel="icon" type="image/png" href="./logo_newlead.png" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- BANNER SUPERIOR CORPORATIVO NEWLEAD -->
+  <header class="topbar">
+    <div class="nl-brand">
+      <div class="nl-logo-box">
+        <img src="./logo_newlead.png" alt="Newlead Contact Center" class="nl-logo-img" />
+      </div>
+      <div class="nl-brand-text">
+        <p class="eyebrow">Newlead Contact Center · Operación Cencosud</p>
+        <h1>Procesador Operacional de Recorridos</h1>
+      </div>
+    </div>
+    <div class="topbar-badges">
+      <span class="badge-status">⚡ 100% Nativo Windows · Offline</span>
+      <span class="badge-glass">🔒 Cero Celdas en Blanco</span>
+      <span class="badge-glass">📋 Prefijos 3 Dígitos</span>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- BARRA DE REGLAS OPERACIONALES -->
+    <div class="nl-status-bar">
+      <div class="status-left">
+        <span class="dot-green"></span>
+        <span><b>Reglas Operacionales Activas:</b> Prefijo de 3 dígitos (91-107: 113 · 96: 125 · 106: 115 · 108: 110 · 109: 114) + Exclusión de celdas en blanco. Formato Fecha: YYYY-MM-DD · Separador ";".</span>
+      </div>
+      <span class="status-pill">✓ Diccionario Oficial Integrado</span>
+    </div>
+
+    <!-- ZONA DE CARGA DE ARCHIVO -->
+    <section class="upload-section">
+      <div class="panel-header">Control de Carga de Archivos</div>
+      <div class="upload-grid">
+        <div class="upload-card">
+          <div class="card-tag">Paso 1 · Obligatorio</div>
+          <h3>INFORME DE LLAMADAS OUTBOUND</h3>
+          <p>Sube el archivo consolidado exportado de Vicidial (.xlsx, .xls, .csv).</p>
+          <label class="dropzone" id="dropzone" for="source-input">
+            <svg viewBox="0 0 24 24" class="dz-icon"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+            <span id="dropzone-text"><strong>Arrastra o haz clic para seleccionar archivo</strong><small>INFORME DE LLAMADAS OUTBOUND (.xlsx, .xls, .csv)</small></span>
+          </label>
+          <input id="source-input" type="file" accept=".xlsx,.xls,.csv" hidden />
+          <div id="file-info" class="file-info" hidden></div>
+        </div>
+
+        <div class="upload-card side-info-card">
+          <div class="card-tag">Diccionario Oficial</div>
+          <h3>Homologación Cencosud</h3>
+          <p>La herramienta cuenta con el diccionario oficial integrado (26 códigos VICIDIAL a Cencosud).</p>
+          <div class="dict-status-box">
+            <span class="dot-green"></span>
+            <span><b>26 códigos configurados:</b> ENTREV, DNC, CALLBK, CPDP, CRTSCR, FALLEC, NCFILT, NOVIVE, TELOCU, etc.</span>
+          </div>
+          <div class="rule-hint">
+            <b>Combinación automática:</b> Campañas <b>91 y 107</b> se consolidan en un único archivo oficial EEFF. El resto se exporta de forma independiente.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL DE SELECCIÓN DE CAMPAÑAS (Aparece tras cargar) -->
+    <section id="campaigns-section" class="campaigns-section" hidden>
+      <div class="panel-header">Selección Operacional de Campañas a Exportar</div>
+      <div class="filter-toolbar">
+        <div class="filter-actions">
+          <button id="btn-cenco6" class="button pill active" type="button">⭐ 6 Campañas Cencosud (91, 107, 96, 106, 108, 109)</button>
+          <button id="btn-all" class="button pill" type="button">Seleccionar Todas</button>
+          <button id="btn-none" class="button pill" type="button">Limpiar Filtro</button>
+        </div>
+        <div class="date-badge" id="detected-date-badge">📅 Fecha Detectada: -</div>
+      </div>
+
+      <div id="campaign-checkboxes" class="campaign-grid"></div>
+
+      <div class="action-bar">
+        <button id="btn-process" class="button primary large" type="button">
+          <span>⚡ Procesar y Generar Archivos Oficiales</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- PROGRESS BAR -->
+    <div id="progress-panel" class="progress-panel" hidden>
+      <div class="progress-head">
+        <strong id="progress-title">Procesando registros...</strong>
+        <span id="progress-percent">0%</span>
+      </div>
+      <div class="progress-track"><div id="progress-bar"></div></div>
+    </div>
+
+    <!-- SECCIÓN DE RESULTADOS -->
+    <section id="results-section" class="results-section" hidden>
+      <!-- TIRA DE PÍLDORAS RESUMEN -->
+      <div class="summary-pills" id="summary-pills"></div>
+
+      <!-- TARJETAS KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--accent: #0077C2;">
+          <div class="kpi-label">Campañas Detectadas</div>
+          <div class="kpi-val" id="kpi-camps-raw">0</div>
+          <div class="kpi-sub">En archivo origen</div>
+        </div>
+        <div class="kpi-card" style="--accent: #00A8CC;">
+          <div class="kpi-label">Campañas Activas</div>
+          <div class="kpi-val" id="kpi-camps-active">0</div>
+          <div class="kpi-sub">Seleccionadas</div>
+        </div>
+        <div class="kpi-card" style="--accent: #00B862;">
+          <div class="kpi-label">Archivos Oficiales</div>
+          <div class="kpi-val" id="kpi-files-count">0</div>
+          <div class="kpi-sub">91+107 unidas · Resto indep.</div>
+        </div>
+        <div class="kpi-card" style="--accent: #10B981;">
+          <div class="kpi-label">Registros Válidos</div>
+          <div class="kpi-val" id="kpi-valid-records">0</div>
+          <div class="kpi-sub">100% limpios y completos</div>
+        </div>
+        <div class="kpi-card" style="--accent: #F59E0B;">
+          <div class="kpi-label">Fuera por Prefijo ID</div>
+          <div class="kpi-val" id="kpi-excl-prefix">0</div>
+          <div class="kpi-sub">No cumplen 3 dígitos</div>
+        </div>
+        <div class="kpi-card" style="--accent: #EF4444;">
+          <div class="kpi-label">Fuera Celdas Blanco</div>
+          <div class="kpi-val" id="kpi-excl-blank">0</div>
+          <div class="kpi-sub">Datos incompletos</div>
+        </div>
+        <div class="kpi-card" style="--accent: #6366F1;">
+          <div class="kpi-label">Índice de Calidad</div>
+          <div class="kpi-val" id="kpi-quality">100%</div>
+          <div class="kpi-sub">Aprobación operacional</div>
+        </div>
+      </div>
+
+      <!-- TABS NAVEGACIÓN -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-exports">📦 Archivos Oficiales y Descarga</button>
+        <button class="tab-btn" data-tab="tab-audit" id="tab-audit-btn">🛡️ Auditoría de Descartes (0)</button>
+        <button class="tab-btn" data-tab="tab-dictionary">📋 Diccionario de Homologación</button>
+      </div>
+
+      <!-- TAB 1: DESCARGAS -->
+      <div id="tab-exports" class="tab-pane active">
+        <div class="results-layout">
+          <div class="files-column" id="files-list"></div>
+          <div class="download-column">
+            <div class="zip-card">
+              <span class="tag-blue">DESCARGA CONSOLIDADA EN 1 CLIC</span>
+              <h3>Paquete Oficial Completo (.ZIP)</h3>
+              <p>Descarga todos los archivos CSV oficiales independientes agrupados en un único archivo ZIP listo para entrega.</p>
+              <button id="btn-zip-download" class="button primary full" type="button">
+                📦 Descargar Selección en ZIP
+              </button>
+            </div>
+            <div class="prefix-guide-card">
+              <h4>Reglas de Prefijos Oficiales:</h4>
+              <ul>
+                <li><b>Campañas 91 + 107 (EEFF):</b> Prefijo obligatorio <code>113</code></li>
+                <li><b>Campaña 96 (APP):</b> Prefijo obligatorio <code>125</code></li>
+                <li><b>Campaña 106 (Totem):</b> Prefijo obligatorio <code>115</code></li>
+                <li><b>Campaña 108 (Call Center):</b> Prefijo obligatorio <code>110</code></li>
+                <li><b>Campaña 109 (Web):</b> Prefijo obligatorio <code>114</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: AUDITORÍA -->
+      <div id="tab-audit" class="tab-pane">
+        <div id="audit-content"></div>
+      </div>
+
+      <!-- TAB 3: DICCIONARIO -->
+      <div id="tab-dictionary" class="tab-pane">
+        <div class="table-container">
+          <table class="data-table" id="dict-table">
+            <thead>
+              <tr>
+                <th>COD VICIDIAL</th>
+                <th>CATEGORÍA CENCOSUD</th>
+                <th>TIPIFICACIÓN CENCOSUD</th>
+                <th>ESTADO</th>
+                <th>RELLAMADA</th>
+              </tr>
+            </thead>
+            <tbody id="dict-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./vendor/xlsx.full.min.js"></script>
+  <script src="./vendor/jszip.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
