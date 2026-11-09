@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Newlead Contact Center · Procesador de gestiones de bases cliente Transbank." />
+    <title>Newlead · Procesador de Gestiones Transbank</title>
+    <link rel="icon" type="image/png" href="./logo_newlead.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="nl-brand">
+        <div class="nl-logo-box">
+          <img src="./logo_newlead.png" alt="Newlead Contact Center" class="nl-logo-img" />
+        </div>
+        <div class="nl-brand-text">
+          <p class="eyebrow">Newlead Contact Center · Operación Transbank</p>
+          <h1>Procesador de Gestiones</h1>
+        </div>
+      </div>
+      <div class="privacy-badge">
+        <span></span> Procesamiento local seguro
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="intro" aria-labelledby="intro-title">
+        <div>
+          <p class="step-label">Preparación de entrega</p>
+          <h2 id="intro-title">Cruza todas las bases en una sola ejecución</h2>
+          <p>Selecciona el INFORME DE LLAMADAS OUTBOUND y las bases recibidas del cliente. La herramienta completa B:J, prioriza <strong>ENTREV</strong> y conserva el resto de cada archivo.</p>
+        </div>
+        <div class="rule-card">
+          <span class="rule-number">01</span>
+          <div>
+            <strong>Prioridad confirmada</strong>
+            <p>Si un ID tiene ENTREV, se utiliza su ENTREV más reciente.</p>
+          </div>
+        </div>
+        <article class="upload-card" id="catalog-zone">
+          <div class="card-topline">
+            <span class="card-index">3</span>
+            <span>Personalizable</span>
+          </div>
+          <h3>Homologación Transbank</h3>
+          <p>Sube archivo de tipificaciones (.xlsx, .csv) o usa el catálogo incorporado (52 códigos).</p>
+          <label class="dropzone" for="catalog-input">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.5L19 9.5V19a2 2 0 0 1-2 2z"/></svg>
+            <span><strong>Subir Homologación</strong><small>Excel o CSV con códigos</small></span>
+          </label>
+          <input id="catalog-input" type="file" accept=".xlsx,.xls,.csv" hidden />
+          <div id="catalog-file" class="file-selection" aria-live="polite">
+            <div class="file-pill"><span id="catalog-pill-text">✓ Catálogo activo: 52 códigos</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="upload-grid" aria-label="Carga de archivos">
+        <article class="upload-card" id="source-zone">
+          <div class="card-topline">
+            <span class="card-index">1</span>
+            <span class="required">Obligatorio</span>
+          </div>
+          <h3>INFORME DE LLAMADAS OUTBOUND</h3>
+          <p>Archivo origen con Usuario, ID, Hora_inicio, Hora_fin y Estado Tipificacion.</p>
+          <label class="dropzone" for="source-input">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+            <span><strong>Seleccionar INFORME DE LLAMADAS OUTBOUND</strong><small>Excel .xlsx o .xls</small></span>
+          </label>
+          <input id="source-input" type="file" accept=".xlsx,.xls" hidden />
+          <div id="source-file" class="file-selection" aria-live="polite"></div>
+        </article>
+
+        <article class="upload-card" id="targets-zone">
+          <div class="card-topline">
+            <span class="card-index">2</span>
+            <span>Uno o más archivos</span>
+          </div>
+          <h3>Bases cliente Transbank</h3>
+          <p>Puedes cargar las seis bases habituales o cualquier otra cantidad.</p>
+          <label class="dropzone" for="targets-input">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+            <span><strong>Seleccionar bases</strong><small>Selección múltiple habilitada</small></span>
+          </label>
+          <input id="targets-input" type="file" accept=".xlsx,.xls" multiple hidden />
+          <div id="targets-files" class="file-selection file-list" aria-live="polite"></div>
+        </article>
+      </section>
+
+      
+      <!-- SELECCIÓN OPERACIONAL DE TIPIFICACIONES A ENTREGAR -->
+      <section id="tip-filter-section" class="tip-delivery-card" hidden>
+        <div class="tip-card-header">
+          <div>
+            <div class="badge-tag">Filtro de Entrega al Cliente</div>
+            <h4>🎯 Tipificaciones a Medir y Entregar</h4>
+            <p>Selecciona las tipificaciones que deben incluirse en las bases procesadas finales.</p>
+          </div>
+          <div class="tip-quick-actions">
+            <button id="btn-tip-all" class="button pill active" type="button">Todas (<span id="tip-total-count">0</span>)</button>
+            <button id="btn-tip-contacted" class="button pill" type="button">Solo Contactados</button>
+            <button id="btn-tip-none" class="button pill" type="button">Deseleccionar</button>
+            <button id="btn-add-tip-modal" class="button pill secondary" type="button">➕ Agregar Código</button>
+          </div>
+        </div>
+        <div id="unmapped-warning-box" class="unmapped-warning-box" hidden></div>
+        <div id="tip-checkboxes-grid" class="tip-checkboxes-grid"></div>
+      </section>
+
+      <section class="control-panel">
+        <div class="control-copy">
+          <div class="shield" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.8-2.9 8.1-7 10-4.1-1.9-7-5.2-7-10V6l7-3zM9 12l2 2 4-4"/></svg>
+          </div>
+          <div>
+            <strong>Tus datos no salen de este navegador</strong>
+            <p>Los archivos se leen y generan localmente con total privacidad y seguridad.</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="reset-button" class="button secondary" type="button">Limpiar</button>
+          <button id="process-button" class="button primary" type="button" disabled>
+            <span>Procesar bases</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section id="progress-panel" class="progress-panel" hidden aria-live="polite">
+        <div class="progress-head">
+          <strong id="progress-title">Preparando archivos…</strong>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track"><div id="progress-bar"></div></div>
+        <p id="progress-detail">Validando estructura y encabezados.</p>
+      </section>
+
+      <section id="results-panel" class="results-panel" hidden aria-labelledby="results-title">
+        <div class="results-header">
+          <div>
+            <p class="step-label">Proceso finalizado</p>
+            <h2 id="results-title">Resultados listos</h2>
+          </div>
+          <button id="download-button" class="button download" type="button" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14"/></svg>
+            Descargar ZIP
+          </button>
+        </div>
+        <div id="summary-cards" class="summary-cards"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Base</th>
+                <th>Registros</th>
+                <th>Encontrados</th>
+                <th>ENTREV</th>
+                <th>Sin gestión</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+        <div id="warnings-box" class="warnings" hidden></div>
+      </section>
+    </main>
+
+    <footer>
+      <span><strong>Newlead Contact Center</strong> · Operación Transbank</span>
+      <span>Catálogo incorporado: 52 códigos</span>
+      <span>Regla de selección: ENTREV → última gestión</span>
+    </footer>
+
+    <script src="./vendor/xlsx.full.min.js"></script>
+    <script src="./vendor/jszip.min.js"></script>
+    <script src="./app.js"></script>
+    <!-- MODAL AGREGAR / EDITAR TIPIFICACIÓN -->
+  <div id="tip-modal" class="modal-overlay" hidden>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="tip-modal-title">Agregar / Homologar Tipificación</h3>
+        <button id="btn-modal-close" class="modal-close" type="button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="modal-input-code">Código Vicidial / Reporte (*)</label>
+          <input type="text" id="modal-input-code" placeholder="Ej: ENTREV, PNDCEN, TELOCU..." />
+        </div>
+        <div class="form-group">
+          <label for="modal-input-cat">Categoría IPSOS (*)</label>
+          <select id="modal-input-cat">
+            <option value="CONTACTADO">CONTACTADO</option>
+            <option value="NO CONTACTADO">NO CONTACTADO</option>
+            <option value="RESOLUCIONES DE SISTEMA">RESOLUCIONES DE SISTEMA</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modal-input-tip">Tipificación IPSOS (*)</label>
+          <input type="text" id="modal-input-tip" placeholder="Ej: ENCUESTA EFECTIVA, RECHAZO..." />
+        </div>
+        <div class="form-group">
+          <label for="modal-input-subtip">Sub Tipificación IPSOS</label>
+          <input type="text" id="modal-input-subtip" placeholder="Ej: ENCUESTA EFECTIVA, NO DESEA..." />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-cancel" class="button secondary" type="button">Cancelar</button>
+        <button id="btn-modal-save" class="button primary" type="button">Guardar Tipificación</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

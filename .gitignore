@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -7,22 +7,14 @@ __pycache__/
 *.xlsx
 !TIPIFICACIONES_CENCOSUD_FINAL.xlsx
 !Recorrido_Cencosud/TIPIFICACIONES_CENCOSUD_FINAL.xlsx
+!Recorrido_Mapfre/TIPIFICACIONES_MAPFRE.xlsx
 *.csv
 *.zip
 Incidencias_Exportadas_*/
 test_*.py
-create_files.py
-read_db.py
-check_*.py
-analyze.py
-compare_*.py
-extracted.txt
-
-# Carpetas de otros recorridos independientes
-Recorrido_Transbank/
-iniciar_transbank.bat
-Recorrido_Mapfre/
-iniciar_mapfre.bat
+patch_*.py
+build_*.py
+update_*.py
 
 # Entornos virtuales
 .venv/

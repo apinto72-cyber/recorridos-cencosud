@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -33,13 +33,14 @@
         <span class="dot-green"></span>
         <span><b>Reglas Operacionales Activas:</b> Prefijo de 3 dígitos (91-107: 113 · 96: 125 · 106: 115 · 108: 110 · 109: 114) + Exclusión de celdas en blanco. Formato Fecha: YYYY-MM-DD · Separador ";".</span>
       </div>
-      <span class="status-pill">✓ Diccionario Oficial Integrado</span>
+      <span class="status-pill" id="top-dict-pill">✓ Homologación Configurada</span>
     </div>
 
-    <!-- ZONA DE CARGA DE ARCHIVO -->
+    <!-- ZONA DE CARGA DE ARCHIVOS -->
     <section class="upload-section">
       <div class="panel-header">Control de Carga de Archivos</div>
       <div class="upload-grid">
+        <!-- CARD 1: INFORME DE LLAMADAS -->
         <div class="upload-card">
           <div class="card-tag">Paso 1 · Obligatorio</div>
           <h3>INFORME DE LLAMADAS OUTBOUND</h3>
@@ -52,24 +53,30 @@
           <div id="file-info" class="file-info" hidden></div>
         </div>
 
-        <div class="upload-card side-info-card">
-          <div class="card-tag">Diccionario Oficial</div>
+        <!-- CARD 2: HOMOLOGACIÓN DE TIPIFICACIONES -->
+        <div class="upload-card">
+          <div class="card-tag">Homologación · Personalizable</div>
           <h3>Homologación Cencosud</h3>
-          <p>La herramienta cuenta con el diccionario oficial integrado (26 códigos VICIDIAL a Cencosud).</p>
-          <div class="dict-status-box">
+          <p>Sube el archivo de homologación para actualizar o agregar tipificaciones (.xlsx, .xls, .csv).</p>
+          <label class="dropzone dropzone-dict" id="dict-dropzone" for="dict-input">
+            <svg viewBox="0 0 24 24" class="dz-icon"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.5L19 9.5V19a2 2 0 0 1-2 2z"/></svg>
+            <span id="dict-dropzone-text"><strong>Arrastra o haz clic para subir Homologación</strong><small>TIPIFICACIONES_CENCOSUD (.xlsx, .csv) o usa la oficial</small></span>
+          </label>
+          <input id="dict-input" type="file" accept=".xlsx,.xls,.csv" hidden />
+          <div id="dict-file-info" class="file-info dict-badge-info">
             <span class="dot-green"></span>
-            <span><b>26 códigos configurados:</b> ENTREV, DNC, CALLBK, CPDP, CRTSCR, FALLEC, NCFILT, NOVIVE, TELOCU, etc.</span>
-          </div>
-          <div class="rule-hint">
-            <b>Combinación automática:</b> Campañas <b>91 y 107</b> se consolidan en un único archivo oficial EEFF. El resto se exporta de forma independiente.
+            <span id="dict-status-text"><b>Diccionario Oficial activo:</b> 26 códigos Vicidial</span>
+            <div class="dict-quick-btns">
+              <button id="btn-quick-add-tip" class="button mini secondary" type="button">➕ Agregar Código</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PANEL DE SELECCIÓN DE CAMPAÑAS (Aparece tras cargar) -->
+    <!-- PANEL DE SELECCIÓN DE CAMPAÑAS Y TIPIFICACIONES (Aparece tras cargar) -->
     <section id="campaigns-section" class="campaigns-section" hidden>
-      <div class="panel-header">Selección Operacional de Campañas a Exportar</div>
+      <div class="panel-header">1. Selección Operacional de Campañas a Exportar</div>
       <div class="filter-toolbar">
         <div class="filter-actions">
           <button id="btn-cenco6" class="button pill active" type="button">⭐ 6 Campañas Cencosud (91, 107, 96, 106, 108, 109)</button>
@@ -80,6 +87,25 @@
       </div>
 
       <div id="campaign-checkboxes" class="campaign-grid"></div>
+
+      <!-- SELECCIÓN OPERACIONAL DE TIPIFICACIONES A ENTREGAR -->
+      <div class="tip-delivery-card" id="tip-delivery-card">
+        <div class="tip-card-header">
+          <div>
+            <div class="badge-tag">2. Filtro de Entrega de Tipificaciones</div>
+            <h4>🎯 Tipificaciones a Medir y Entregar en el Recorrido</h4>
+            <p>Selecciona las tipificaciones que deben incluirse en los archivos oficiales finales para las campañas activas.</p>
+          </div>
+          <div class="tip-quick-actions">
+            <button id="btn-tip-all" class="button pill active" type="button">Todas (<span id="tip-total-count">0</span>)</button>
+            <button id="btn-tip-contacted" class="button pill" type="button">Solo Contactados</button>
+            <button id="btn-tip-none" class="button pill" type="button">Deseleccionar</button>
+            <button id="btn-add-tip-modal" class="button pill secondary" type="button">➕ Agregar Código</button>
+          </div>
+        </div>
+        <div id="unmapped-warning-box" class="unmapped-warning-box" hidden></div>
+        <div id="tip-checkboxes-grid" class="tip-checkboxes-grid"></div>
+      </div>
 
       <div class="action-bar">
         <button id="btn-process" class="button primary large" type="button">
@@ -122,7 +148,12 @@
         <div class="kpi-card" style="--accent: #10B981;">
           <div class="kpi-label">Registros Válidos</div>
           <div class="kpi-val" id="kpi-valid-records">0</div>
-          <div class="kpi-sub">100% limpios y completos</div>
+          <div class="kpi-sub">100% listos para entrega</div>
+        </div>
+        <div class="kpi-card" style="--accent: #8B5CF6;">
+          <div class="kpi-label">Fuera Filtro Tipificación</div>
+          <div class="kpi-val" id="kpi-excl-tip">0</div>
+          <div class="kpi-sub">Excluidos por selección</div>
         </div>
         <div class="kpi-card" style="--accent: #F59E0B;">
           <div class="kpi-label">Fuera por Prefijo ID</div>
@@ -134,7 +165,7 @@
           <div class="kpi-val" id="kpi-excl-blank">0</div>
           <div class="kpi-sub">Datos incompletos</div>
         </div>
-        <div class="kpi-card" style="--accent: #6366F1;">
+        <div class="kpi-card" style="--accent: #06B6D4;">
           <div class="kpi-label">Índice de Calidad</div>
           <div class="kpi-val" id="kpi-quality">100%</div>
           <div class="kpi-sub">Aprobación operacional</div>
@@ -145,7 +176,7 @@
       <div class="tabs-nav">
         <button class="tab-btn active" data-tab="tab-exports">📦 Archivos Oficiales y Descarga</button>
         <button class="tab-btn" data-tab="tab-audit" id="tab-audit-btn">🛡️ Auditoría de Descartes (0)</button>
-        <button class="tab-btn" data-tab="tab-dictionary">📋 Diccionario de Homologación</button>
+        <button class="tab-btn" data-tab="tab-dictionary" id="tab-dict-btn">📋 Diccionario de Homologación</button>
       </div>
 
       <!-- TAB 1: DESCARGAS -->
@@ -182,6 +213,17 @@
 
       <!-- TAB 3: DICCIONARIO -->
       <div id="tab-dictionary" class="tab-pane">
+        <div class="dict-actions-bar">
+          <div class="dict-actions-left">
+            <span class="status-pill" id="dict-count-pill">26 Códigos Cargados</span>
+            <input type="text" id="dict-search-input" placeholder="🔍 Buscar código o tipificación..." class="filter-search-input" />
+          </div>
+          <div class="dict-actions-right">
+            <button id="btn-dict-add" class="button small primary" type="button">➕ Agregar Código</button>
+            <button id="btn-dict-export" class="button small secondary" type="button">📥 Exportar a Excel (.xlsx)</button>
+            <button id="btn-dict-reset" class="button small danger-outline" type="button">↺ Restablecer Base</button>
+          </div>
+        </div>
         <div class="table-container">
           <table class="data-table" id="dict-table">
             <thead>
@@ -189,8 +231,10 @@
                 <th>COD VICIDIAL</th>
                 <th>CATEGORÍA CENCOSUD</th>
                 <th>TIPIFICACIÓN CENCOSUD</th>
+                <th>SUB TIPIFICACIÓN</th>
                 <th>ESTADO</th>
                 <th>RELLAMADA</th>
+                <th style="text-align:center;">ACCIONES</th>
               </tr>
             </thead>
             <tbody id="dict-table-body"></tbody>
@@ -199,6 +243,57 @@
       </div>
     </section>
   </main>
+
+  <!-- MODAL AGREGAR / EDITAR TIPIFICACIÓN -->
+  <div id="tip-modal" class="modal-overlay" hidden>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="tip-modal-title">Agregar / Homologar Tipificación</h3>
+        <button id="btn-modal-close" class="modal-close" type="button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="modal-input-code">Código Vicidial / Reporte (*)</label>
+          <input type="text" id="modal-input-code" placeholder="Ej: ENTREV, N, TELOCU..." />
+        </div>
+        <div class="form-group">
+          <label for="modal-input-cat">Categoría Cencosud (*)</label>
+          <select id="modal-input-cat">
+            <option value="Contacto">Contacto</option>
+            <option value="No Contacto">No Contacto</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modal-input-tip">Tipificación Cencosud (*)</label>
+          <input type="text" id="modal-input-tip" placeholder="Ej: Encuesta Exitosa, No Contestan..." />
+        </div>
+        <div class="form-group">
+          <label for="modal-input-subtip">Sub Tipificación (Opcional)</label>
+          <input type="text" id="modal-input-subtip" placeholder="Dejar en blanco para usar la misma tipificación" />
+        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="modal-input-status">Estado</label>
+            <select id="modal-input-status">
+              <option value="NO DISPONIBLE">NO DISPONIBLE</option>
+              <option value="DISPONIBLE">DISPONIBLE</option>
+            </select>
+          </div>
+          <div class="form-group half">
+            <label for="modal-input-rellamada">Rellamada</label>
+            <select id="modal-input-rellamada">
+              <option value="NO">NO</option>
+              <option value="SI">SI</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-cancel" class="button secondary" type="button">Cancelar</button>
+        <button id="btn-modal-save" class="button primary" type="button">Guardar Tipificación</button>
+      </div>
+    </div>
+  </div>
 
   <script src="./vendor/xlsx.full.min.js"></script>
   <script src="./vendor/jszip.min.js"></script>
