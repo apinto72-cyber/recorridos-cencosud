@@ -1,75 +1,156 @@
 (function () {
   "use strict";
 
-  // 1. DICCIONARIO BASE OFICIAL CENCOSUD (26 Códigos Oficiales)
-  const DEFAULT_DICT_CENCOSUD = Object.freeze({
-    "A": { categoria: "No Contacto", tipificacion: "Buzón de Voz/Fax", subTipificacion: "Buzón de Voz/Fax", status: "DISPONIBLE", rellamada: "SI" },
-    "AA": { categoria: "No Contacto", tipificacion: "Buzón de Voz/Fax", subTipificacion: "Buzón de Voz/Fax", status: "DISPONIBLE", rellamada: "SI" },
-    "AB": { categoria: "No Contacto", tipificacion: "Teléfono Ocupado", subTipificacion: "Teléfono Ocupado", status: "DISPONIBLE", rellamada: "SI" },
-    "ADC": { categoria: "No Contacto", tipificacion: "Teléfono fuera de servicio", subTipificacion: "Teléfono fuera de servicio", status: "NO DISPONIBLE", rellamada: "NO" },
-    "CALLBK": { categoria: "Contacto", tipificacion: "Cliente Ocupado, Volver a llamar", subTipificacion: "Cliente Ocupado, Volver a llamar", status: "DISPONIBLE", rellamada: "SI" },
-    "CPDP": { categoria: "Contacto", tipificacion: "Cliente Ocupado, Volver a llamar", subTipificacion: "Cliente Ocupado, Volver a llamar", status: "DISPONIBLE", rellamada: "SI" },
-    "CRTSCR": { categoria: "Contacto", tipificacion: "No está interesado, no quiere hacer encuesta", subTipificacion: "No está interesado, no quiere hacer encuesta", status: "NO DISPONIBLE", rellamada: "NO" },
-    "DNC": { categoria: "Contacto", tipificacion: "Cliente Molesto, No volver a Llamar", subTipificacion: "Cliente Molesto, No volver a Llamar", status: "NO DISPONIBLE", rellamada: "NO" },
-    "EMABAN": { categoria: "No Contacto", tipificacion: "Cortan la Llamada", subTipificacion: "Cortan la Llamada", status: "NO DISPONIBLE", rellamada: "NO" },
-    "ENTREV": { categoria: "Contacto", tipificacion: "Encuesta Exitosa", subTipificacion: "Encuesta Exitosa", status: "NO DISPONIBLE", rellamada: "NO" },
-    "FALLEC": { categoria: "Contacto", tipificacion: "Cliente Fallecido", subTipificacion: "Cliente Fallecido", status: "NO DISPONIBLE", rellamada: "NO" },
-    "FONOMA": { categoria: "No Contacto", tipificacion: "Teléfono fuera de servicio", subTipificacion: "Teléfono fuera de servicio", status: "NO DISPONIBLE", rellamada: "NO" },
-    "N": { categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
-    "NAN": { categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
-    "NCFILT": { categoria: "Contacto", tipificacion: "No Califica (No Cumple Condiciones)", subTipificacion: "No Califica (No Cumple Condiciones)", status: "NO DISPONIBLE", rellamada: "NO" },
-    "NOVIVE": { categoria: "Contacto", tipificacion: "Cliente no vive ahí /Equivocado/No Existe", subTipificacion: "Cliente no vive ahí /Equivocado/No Existe", status: "NO DISPONIBLE", rellamada: "NO" },
-    "NSLPRE": { categoria: "Contacto", tipificacion: "No se encuentra /No Disponible", subTipificacion: "No se encuentra /No Disponible", status: "NO DISPONIBLE", rellamada: "NO" },
-    "PCHORA": { categoria: "Contacto", tipificacion: "No se encuentra /No Disponible", subTipificacion: "No se encuentra /No Disponible", status: "NO DISPONIBLE", rellamada: "NO" },
-    "TELOCU": { categoria: "No Contacto", tipificacion: "Teléfono Ocupado", subTipificacion: "Teléfono Ocupado", status: "DISPONIBLE", rellamada: "SI" },
-    "TPDP": { categoria: "Contacto", tipificacion: "Cliente Ocupado, Volver a llamar", subTipificacion: "Cliente Ocupado, Volver a llamar", status: "DISPONIBLE", rellamada: "SI" },
-    "DROP": { categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
-    "CAIDOC": { categoria: "Contacto", tipificacion: "No Califica (No Cumple Condiciones)", subTipificacion: "No Califica (No Cumple Condiciones)", status: "NO DISPONIBLE", rellamada: "NO" },
-    "INCALL": { categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
-    "COTAS": { categoria: "Contacto", tipificacion: "No Califica (No Cumple Condiciones)", subTipificacion: "No Califica (No Cumple Condiciones)", status: "NO DISPONIBLE", rellamada: "NO" },
-    "VIAJE": { categoria: "Contacto", tipificacion: "No se encuentra /No Disponible", subTipificacion: "No se encuentra /No Disponible", status: "NO DISPONIBLE", rellamada: "NO" },
-    "PDROP": { categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" }
-  });
+  // =========================================================================
+  // 1. DICCIONARIO BASE OFICIAL CENCOSUD (26 Codigos Oficiales Base)
+  // =========================================================================
+  const DEFAULT_CODES = [
+    { campana: "TODAS", codigo: "A", categoria: "No Contacto", tipificacion: "Buzón de Voz/Fax", subTipificacion: "Buzón de Voz/Fax", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "AA", categoria: "No Contacto", tipificacion: "Buzón de Voz/Fax", subTipificacion: "Buzón de Voz/Fax", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "AB", categoria: "No Contacto", tipificacion: "Teléfono Ocupado", subTipificacion: "Teléfono Ocupado", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "ADC", categoria: "No Contacto", tipificacion: "Teléfono fuera de servicio", subTipificacion: "Teléfono fuera de servicio", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "CALLBK", categoria: "Contacto", tipificacion: "Cliente Ocupado, Volver a llamar", subTipificacion: "Cliente Ocupado, Volver a llamar", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "CPDP", categoria: "Contacto", tipificacion: "Cliente Ocupado, Volver a llamar", subTipificacion: "Cliente Ocupado, Volver a llamar", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "CRTSCR", categoria: "Contacto", tipificacion: "No está interesado, no quiere hacer encuesta", subTipificacion: "No está interesado, no quiere hacer encuesta", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "DNC", categoria: "Contacto", tipificacion: "Cliente Molesto, No volver a Llamar", subTipificacion: "Cliente Molesto, No volver a Llamar", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "EMABAN", categoria: "No Contacto", tipificacion: "Cortan la Llamada", subTipificacion: "Cortan la Llamada", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "ENTREV", categoria: "Contacto", tipificacion: "Encuesta Exitosa", subTipificacion: "Encuesta Exitosa", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "FALLEC", categoria: "Contacto", tipificacion: "Cliente Fallecido", subTipificacion: "Cliente Fallecido", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "FONOMA", categoria: "No Contacto", tipificacion: "Teléfono fuera de servicio", subTipificacion: "Teléfono fuera de servicio", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "N", categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "NAN", categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "NCFILT", categoria: "Contacto", tipificacion: "No Califica (No Cumple Condiciones)", subTipificacion: "No Califica (No Cumple Condiciones)", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "NOVIVE", categoria: "Contacto", tipificacion: "Cliente no vive ahí /Equivocado/No Existe", subTipificacion: "Cliente no vive ahí /Equivocado/No Existe", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "NSLPRE", categoria: "Contacto", tipificacion: "No se encuentra /No Disponible", subTipificacion: "No se encuentra /No Disponible", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "PCHORA", categoria: "Contacto", tipificacion: "No se encuentra /No Disponible", subTipificacion: "No se encuentra /No Disponible", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "TELOCU", categoria: "No Contacto", tipificacion: "Teléfono Ocupado", subTipificacion: "Teléfono Ocupado", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "TPDP", categoria: "Contacto", tipificacion: "Cliente Ocupado, Volver a llamar", subTipificacion: "Cliente Ocupado, Volver a llamar", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "DROP", categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "CAIDOC", categoria: "Contacto", tipificacion: "No Califica (No Cumple Condiciones)", subTipificacion: "No Califica (No Cumple Condiciones)", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "INCALL", categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" },
+    { campana: "TODAS", codigo: "COTAS", categoria: "Contacto", tipificacion: "No Califica (No Cumple Condiciones)", subTipificacion: "No Califica (No Cumple Condiciones)", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "VIAJE", categoria: "Contacto", tipificacion: "No se encuentra /No Disponible", subTipificacion: "No se encuentra /No Disponible", status: "NO DISPONIBLE", rellamada: "NO" },
+    { campana: "TODAS", codigo: "PDROP", categoria: "No Contacto", tipificacion: "No Contestan", subTipificacion: "No Contestan", status: "DISPONIBLE", rellamada: "SI" }
+  ];
 
   let currentDict = {};
 
+  function makeKey(campana, codigo) {
+    const camp = (campana === undefined || campana === null || String(campana).trim() === "" || String(campana).trim().toUpperCase() === "TODAS")
+      ? "TODAS"
+      : String(campana).trim().toUpperCase();
+    const cod = String(codigo ?? "").trim().toUpperCase();
+    return camp + ":" + cod;
+  }
+
+  function resolveTipification(campId, rawCode) {
+    if (!rawCode) return null;
+    const normCode = String(rawCode).trim().toUpperCase();
+    const normCamp = String(campId ?? "").trim().toUpperCase();
+
+    if (normCamp && currentDict[normCamp + ":" + normCode]) {
+      return currentDict[normCamp + ":" + normCode];
+    }
+    if (currentDict["TODAS:" + normCode]) {
+      return currentDict["TODAS:" + normCode];
+    }
+    if (currentDict[normCode]) {
+      return currentDict[normCode];
+    }
+    return null;
+  }
+
   function initDictionary() {
-    currentDict = JSON.parse(JSON.stringify(DEFAULT_DICT_CENCOSUD));
+    currentDict = {};
     try {
-      const saved = localStorage.getItem("cencosud_custom_dict");
+      const saved = localStorage.getItem("cencosud_custom_dict_v2");
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === "object") {
-          Object.assign(currentDict, parsed);
+          currentDict = parsed;
+          return;
+        }
+      }
+      const legacySaved = localStorage.getItem("cencosud_custom_dict");
+      if (legacySaved) {
+        const parsedLegacy = JSON.parse(legacySaved);
+        if (parsedLegacy && typeof parsedLegacy === "object") {
+          Object.keys(parsedLegacy).forEach(cod => {
+            const item = parsedLegacy[cod];
+            const k = makeKey(item.campana || "TODAS", cod);
+            currentDict[k] = {
+              campana: item.campana || "TODAS",
+              codigo: cod.toUpperCase(),
+              categoria: item.categoria || "Contacto",
+              tipificacion: item.tipificacion || cod,
+              subTipificacion: item.subTipificacion || item.tipificacion || cod,
+              status: item.status || "NO DISPONIBLE",
+              rellamada: item.rellamada || "NO"
+            };
+          });
+          return;
         }
       }
     } catch (e) {
       console.warn("No se pudo leer localStorage:", e);
     }
+    DEFAULT_CODES.forEach(item => {
+      const k = makeKey(item.campana, item.codigo);
+      currentDict[k] = Object.assign({}, item);
+    });
   }
 
   function saveDictionaryToStorage() {
     try {
-      localStorage.setItem("cencosud_custom_dict", JSON.stringify(currentDict));
+      localStorage.setItem("cencosud_custom_dict_v2", JSON.stringify(currentDict));
     } catch (e) {
       console.warn("No se pudo guardar en localStorage:", e);
     }
   }
 
-  function resetDictionary() {
-    if (!confirm("¿Deseas restablecer el diccionario a los 26 códigos base oficiales? Se borrarán las personalizaciones guardadas.")) return;
+  function clearAllTipifications() {
+    const total = Object.keys(currentDict).length;
+    if (total === 0) {
+      showToast("El diccionario ya está completamente vacío.");
+      return;
+    }
+    const msg = "¿Deseas ELIMINAR TODAS las tipificaciones (" + total + " códigos)?\n\nEl diccionario quedará en blanco para que puedas agregar o importar únicamente las que necesitas para este recorrido.";
+    if (!confirm(msg)) return;
+
+    currentDict = {};
     try {
+      localStorage.removeItem("cencosud_custom_dict_v2");
       localStorage.removeItem("cencosud_custom_dict");
     } catch (e) {}
-    currentDict = JSON.parse(JSON.stringify(DEFAULT_DICT_CENCOSUD));
+
     renderDictionaryTable();
-    updateDictBadge("Oficial base restablecido: 26 códigos Vicidial");
+    updateDictBadge("Diccionario vaciado (0 códigos)");
     if (state.rawRows && state.rawRows.length > 0) {
       updateTipificationsForActiveCampaigns();
     }
-    showToast("Diccionario restablecido a los 26 códigos oficiales.");
+    showToast("Se eliminaron todas las tipificaciones. Diccionario limpio.");
   }
 
+  function loadDefaultTipifications() {
+    const msg = "¿Deseas cargar los 26 códigos base oficiales de Cencosud?";
+    if (!confirm(msg)) return;
+
+    DEFAULT_CODES.forEach(item => {
+      const k = makeKey(item.campana, item.codigo);
+      currentDict[k] = Object.assign({}, item);
+    });
+    saveDictionaryToStorage();
+    renderDictionaryTable();
+    updateDictBadge();
+    if (state.rawRows && state.rawRows.length > 0) {
+      updateTipificationsForActiveCampaigns();
+    }
+    showToast("26 códigos oficiales base cargados.");
+  }
+
+  // =========================================================================
+  // 2. CONFIGURACION DE CAMPANAS CENCOSUD
+  // =========================================================================
   const CAMPAIGN_PREFIX_MAP = Object.freeze({
     "91": "113",
     "107": "113",
@@ -93,37 +174,53 @@
     "DURACION", "TELEFONO", "CODEJECUTIVO", "OLA"
   ];
 
+  // =========================================================================
+  // 3. ESTADO GLOBAL
+  // =========================================================================
   const state = {
     rawRows: [],
+    sourceFileName: "",
     availableCampaigns: [],
-    dominantDate: "",
+    dominantDateIso: "",
+    dominantDateYmd: "",
+    dominantDateDmy: "",
     selectedCampaigns: new Set(["91", "107", "96", "106", "108", "109"]),
     detectedTipifications: [],
     selectedTipifications: new Set(),
     manifest: [],
     zipBlob: null,
-    zipName: ""
+    zipName: "",
+    editingKey: null
   };
 
+  // =========================================================================
+  // 4. ELEMENTOS DEL DOM
+  // =========================================================================
   const el = {
     sourceInput: document.getElementById("source-input"),
     dropzone: document.getElementById("dropzone"),
     dropzoneText: document.getElementById("dropzone-text"),
     fileInfo: document.getElementById("file-info"),
+
     dictInput: document.getElementById("dict-input"),
     dictDropzone: document.getElementById("dict-dropzone"),
     dictDropzoneText: document.getElementById("dict-dropzone-text"),
     dictFileInfo: document.getElementById("dict-file-info"),
     dictStatusText: document.getElementById("dict-status-text"),
     btnQuickAddTip: document.getElementById("btn-quick-add-tip"),
+    btnQuickClearDict: document.getElementById("btn-quick-clear-dict"),
+    btnQuickDefaultDict: document.getElementById("btn-quick-default-dict"),
     topDictPill: document.getElementById("top-dict-pill"),
+
     campaignsSection: document.getElementById("campaigns-section"),
     campaignCheckboxes: document.getElementById("campaign-checkboxes"),
-    detectedDateBadge: document.getElementById("detected-date-badge"),
+    opDateInput: document.getElementById("op-date-input"),
+    dateSourceHint: document.getElementById("date-source-hint"),
     btnCenco6: document.getElementById("btn-cenco6"),
     btnAll: document.getElementById("btn-all"),
     btnNone: document.getElementById("btn-none"),
     btnProcess: document.getElementById("btn-process"),
+
     tipDeliveryCard: document.getElementById("tip-delivery-card"),
     tipCheckboxesGrid: document.getElementById("tip-checkboxes-grid"),
     tipTotalCount: document.getElementById("tip-total-count"),
@@ -132,23 +229,28 @@
     btnTipContacted: document.getElementById("btn-tip-contacted"),
     btnTipNone: document.getElementById("btn-tip-none"),
     btnAddTipModal: document.getElementById("btn-add-tip-modal"),
+
     progressPanel: document.getElementById("progress-panel"),
     progressTitle: document.getElementById("progress-title"),
     progressPercent: document.getElementById("progress-percent"),
     progressBar: document.getElementById("progress-bar"),
+
     resultsSection: document.getElementById("results-section"),
     summaryPills: document.getElementById("summary-pills"),
     filesList: document.getElementById("files-list"),
     btnZipDownload: document.getElementById("btn-zip-download"),
     auditContent: document.getElementById("audit-content"),
+
     tabAuditBtn: document.getElementById("tab-audit-btn"),
     tabDictBtn: document.getElementById("tab-dict-btn"),
     dictTableBody: document.getElementById("dict-table-body"),
     dictCountPill: document.getElementById("dict-count-pill"),
     dictSearchInput: document.getElementById("dict-search-input"),
     btnDictAdd: document.getElementById("btn-dict-add"),
+    btnDictClearAll: document.getElementById("btn-dict-clear-all"),
+    btnDictDefault: document.getElementById("btn-dict-default"),
     btnDictExport: document.getElementById("btn-dict-export"),
-    btnDictReset: document.getElementById("btn-dict-reset"),
+
     kpiCampsRaw: document.getElementById("kpi-camps-raw"),
     kpiCampsActive: document.getElementById("kpi-camps-active"),
     kpiFilesCount: document.getElementById("kpi-files-count"),
@@ -157,11 +259,14 @@
     kpiExclPrefix: document.getElementById("kpi-excl-prefix"),
     kpiExclBlank: document.getElementById("kpi-excl-blank"),
     kpiQuality: document.getElementById("kpi-quality"),
+
     tipModal: document.getElementById("tip-modal"),
     tipModalTitle: document.getElementById("tip-modal-title"),
     btnModalClose: document.getElementById("btn-modal-close"),
     btnModalCancel: document.getElementById("btn-modal-cancel"),
     btnModalSave: document.getElementById("btn-modal-save"),
+    modalInputCamp: document.getElementById("modal-input-camp"),
+    modalInputCampCustom: document.getElementById("modal-input-camp-custom"),
     modalInputCode: document.getElementById("modal-input-code"),
     modalInputCat: document.getElementById("modal-input-cat"),
     modalInputTip: document.getElementById("modal-input-tip"),
@@ -170,6 +275,9 @@
     modalInputRellamada: document.getElementById("modal-input-rellamada")
   };
 
+  // =========================================================================
+  // 5. UTILIDADES GENERALES
+  // =========================================================================
   function showToast(message) {
     const existing = document.querySelector(".toast-notice");
     if (existing) existing.remove();
@@ -197,57 +305,113 @@
   }
 
   function pad(n) {
-    return n < 10 ? "0" + n : String(n);
+    const num = Math.floor(Math.abs(Number(n) || 0));
+    return num < 10 ? "0" + num : String(num);
   }
 
+  // =========================================================================
+  // 6. MOTOR DE FECHAS (Elimina 1899 al 100% y soporta selector interactivo)
+  // =========================================================================
   function parseDateObj(val) {
-    if (!val) return null;
-    if (val instanceof Date && !isNaN(val)) return val;
-    if (typeof val === "number") {
+    if (val === null || val === undefined || val === "") return null;
+
+    let d = null;
+
+    if (val instanceof Date) {
+      if (!isNaN(val.getTime())) d = val;
+    } else if (typeof val === "number") {
       const epoch = new Date(Date.UTC(1899, 11, 30));
-      return new Date(epoch.getTime() + val * 86400000);
-    }
-    const s = String(val).trim();
-    const d = new Date(s);
-    if (!isNaN(d)) return d;
-    const parts = s.split(/[\/\-\s:]+/);
-    if (parts.length >= 3) {
-      if (parts[0].length === 4) {
-        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), parseInt(parts[3] || 0), parseInt(parts[4] || 0), parseInt(parts[5] || 0));
-      } else if (parts[2].length === 4) {
-        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]), parseInt(parts[3] || 0), parseInt(parts[4] || 0), parseInt(parts[5] || 0));
+      d = new Date(epoch.getTime() + val * 86400000);
+    } else {
+      const s = String(val).trim();
+      const parsed = new Date(s);
+      if (!isNaN(parsed.getTime())) {
+        d = parsed;
+      } else {
+        const parts = s.split(/[/\-\s:]+/);
+        if (parts.length >= 3) {
+          if (parts[0].length === 4) {
+            d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), parseInt(parts[3] || 0, 10), parseInt(parts[4] || 0, 10), parseInt(parts[5] || 0, 10));
+          } else if (parts[2].length === 4) {
+            d = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10), parseInt(parts[3] || 0, 10), parseInt(parts[4] || 0, 10), parseInt(parts[5] || 0, 10));
+          }
+        }
       }
     }
-    return null;
+
+    if (!d || isNaN(d.getTime())) return null;
+
+    const fullYear = d.getFullYear();
+    const hasValidDate = fullYear >= 2000 && fullYear <= 2099;
+    const h = d.getHours();
+    const m = d.getMinutes();
+    const s = d.getSeconds();
+    const timeStr = pad(h) + ":" + pad(m) + ":" + pad(s);
+
+    let dateGestion = null;
+    let dateLlamada = null;
+    let ymd = null;
+
+    if (hasValidDate) {
+      const year = fullYear;
+      const month = d.getMonth() + 1;
+      const day = d.getDate();
+      dateGestion = year + "-" + pad(month) + "-" + pad(day);
+      dateLlamada = pad(day) + "-" + pad(month) + "-" + year;
+      ymd = "" + year + pad(month) + pad(day);
+    }
+
+    return {
+      rawDate: d,
+      hasValidDate,
+      year: hasValidDate ? fullYear : null,
+      month: hasValidDate ? d.getMonth() + 1 : null,
+      day: hasValidDate ? d.getDate() : null,
+      h, m, s,
+      timeStr,
+      dateGestion,
+      dateLlamada,
+      ymd
+    };
   }
 
-  function formatDateGestion(d) {
-    if (!d) return "";
-    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  function setOperationalDate(isoString, sourceLabel = "Personalizada", isManual = false) {
+    if (!isoString || !/^\d{4}-\d{2}-\d{2}$/.test(isoString)) return;
+    const parts = isoString.split("-");
+    const y = parts[0];
+    const m = parts[1];
+    const d = parts[2];
+
+    state.dominantDateIso = isoString;
+    state.dominantDateYmd = y + m + d;
+    state.dominantDateDmy = d + "-" + m + "-" + y;
+
+    if (el.opDateInput) el.opDateInput.value = isoString;
+    if (el.dateSourceHint) {
+      el.dateSourceHint.textContent = sourceLabel;
+      if (isManual) el.dateSourceHint.classList.add("manual");
+      else el.dateSourceHint.classList.remove("manual");
+    }
+
+    if (state.manifest && state.manifest.length > 0) {
+      state.manifest.forEach(m => {
+        m.archivo = m.archivo.replace(/_TZ_\d{8}\.csv$/, "_TZ_" + state.dominantDateYmd + ".csv");
+      });
+    }
   }
 
-  function formatDateLlamada(d) {
-    if (!d) return "";
-    return pad(d.getDate()) + "-" + pad(d.getMonth() + 1) + "-" + d.getFullYear();
-  }
-
-  function formatTime(d) {
-    if (!d) return "";
-    return d.getHours() + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
-  }
-
-  function parseDurationSeconds(val, startD, endD) {
+  function parseDurationSeconds(val, startObj, endObj) {
     if (val !== undefined && val !== null && val !== "") {
       if (typeof val === "number") return Math.max(0, Math.floor(val));
       const s = String(val).trim();
       const p = s.split(":");
-      if (p.length === 3) return Math.max(0, parseInt(p[0]) * 3600 + parseInt(p[1]) * 60 + parseInt(p[2]));
-      if (p.length === 2) return Math.max(0, parseInt(p[0]) * 60 + parseInt(p[1]));
+      if (p.length === 3) return Math.max(0, parseInt(p[0], 10) * 3600 + parseInt(p[1], 10) * 60 + parseInt(p[2], 10));
+      if (p.length === 2) return Math.max(0, parseInt(p[0], 10) * 60 + parseInt(p[1], 10));
       const n = parseInt(s, 10);
       if (!isNaN(n)) return Math.max(0, n);
     }
-    if (startD && endD) {
-      const diff = Math.floor((endD.getTime() - startD.getTime()) / 1000);
+    if (startObj && endObj && startObj.rawDate && endObj.rawDate) {
+      const diff = Math.floor((endObj.rawDate.getTime() - startObj.rawDate.getTime()) / 1000);
       return Math.max(0, diff);
     }
     return 0;
@@ -260,57 +424,96 @@
     el.progressBar.style.width = percent + "%";
   }
 
-  function updateDictBadge(text) {
+  function updateDictBadge(customText) {
     const total = Object.keys(currentDict).length;
-    el.dictStatusText.innerHTML = "<b>Homologación activa:</b> " + (text || (total + " códigos configurados"));
-    el.dictCountPill.textContent = total + " Códigos Activos";
-    el.topDictPill.textContent = "✓ " + total + " Tipificaciones Homologadas";
+    if (customText) {
+      el.dictStatusText.innerHTML = "<b>Homologación activa:</b> " + customText;
+    } else {
+      el.dictStatusText.innerHTML = "<b>Homologación activa:</b> " + total + " códigos Vicidial configurados";
+    }
+    if (el.dictCountPill) el.dictCountPill.textContent = total + " Códigos Activos";
+    if (el.topDictPill) el.topDictPill.textContent = "✓ " + total + " Tipificaciones Homologadas";
   }
 
+  // =========================================================================
+  // 7. RENDERIZADO DE TABLA DE DICCIONARIO
+  // =========================================================================
   function renderDictionaryTable(filterText = "") {
     el.dictTableBody.innerHTML = "";
     const filter = (filterText || "").trim().toUpperCase();
-    const codes = Object.keys(currentDict).sort();
+    const keys = Object.keys(currentDict).sort();
+
+    if (keys.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td colspan="7" class="dict-empty-state">
+          <h4>📭 Diccionario Vacío</h4>
+          <p>No hay tipificaciones registradas actualmente. Puedes agregar códigos manualmente con <b>➕ Agregar Código</b>, cargar los <b>↺ 26 Base Oficiales</b> o subir un archivo Excel de Homologación.</p>
+        </td>
+      `;
+      el.dictTableBody.appendChild(tr);
+      el.dictCountPill.textContent = "0 Códigos";
+      return;
+    }
+
     let shownCount = 0;
 
-    codes.forEach(code => {
-      const item = currentDict[code];
+    keys.forEach(k => {
+      const item = currentDict[k] || {};
+      const camp = item.campana || "TODAS";
+      const code = item.codigo || (k.includes(":") ? k.split(":")[1] : k);
+      const cat = item.categoria || "No Contacto";
+      const tip = item.tipificacion || code;
+      const sub = item.subTipificacion || tip;
+      const stat = item.status || "NO DISPONIBLE";
+      const rel = item.rellamada || "NO";
+
       const match = !filter ||
-        code.includes(filter) ||
-        (item.categoria && item.categoria.toUpperCase().includes(filter)) ||
-        (item.tipificacion && item.tipificacion.toUpperCase().includes(filter)) ||
-        (item.subTipificacion && item.subTipificacion.toUpperCase().includes(filter));
+        k.toUpperCase().includes(filter) ||
+        camp.toUpperCase().includes(filter) ||
+        code.toUpperCase().includes(filter) ||
+        cat.toUpperCase().includes(filter) ||
+        tip.toUpperCase().includes(filter) ||
+        sub.toUpperCase().includes(filter);
 
       if (!match) return;
       shownCount++;
 
+      const isTodas = camp === "TODAS";
+      const campBadge = isTodas
+        ? `<span class="tag-camp tag-camp-todas">⭐ TODAS</span>`
+        : `<span class="tag-camp tag-camp-spec">Campaña ${camp}</span>`;
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
+        <td style="text-align:center;">${campBadge}</td>
         <td><b><code>${code}</code></b></td>
-        <td><span class="${item.categoria === 'Contacto' ? 'tag-green' : 'tag-blue'}">${item.categoria || '-'}</span></td>
-        <td>${item.tipificacion || '-'}</td>
-        <td>${item.subTipificacion || item.tipificacion || '-'}</td>
-        <td><span class="${item.status === 'DISPONIBLE' ? 'tag-green' : 'tag-orange'}">${item.status || '-'}</span></td>
-        <td>${item.rellamada || '-'}</td>
+        <td><span class="${cat === 'Contacto' ? 'tag-green' : 'tag-blue'}">${cat}</span></td>
+        <td>${tip}</td>
+        <td>${sub}</td>
+        <td><span class="${stat === 'DISPONIBLE' ? 'tag-green' : 'tag-orange'}">${stat}</span></td>
         <td style="text-align:center;">
-          <button class="btn-action-edit" data-code="${code}" type="button">✏️ Editar</button>
-          <button class="btn-action-del" data-code="${code}" type="button">🗑️ Borrar</button>
+          <button class="btn-action-edit" data-key="${k}" type="button">✏️ Editar</button>
+          <button class="btn-action-del" data-key="${k}" type="button">🗑️ Borrar</button>
         </td>
       `;
 
       tr.querySelector(".btn-action-edit").addEventListener("click", () => {
-        openModalWithCode(code);
+        openModalWithKey(k);
       });
       tr.querySelector(".btn-action-del").addEventListener("click", () => {
-        deleteCode(code);
+        deleteCodeByKey(k);
       });
 
       el.dictTableBody.appendChild(tr);
     });
 
-    el.dictCountPill.textContent = filter ? (shownCount + " de " + codes.length + " Códigos") : (codes.length + " Códigos Activos");
+    el.dictCountPill.textContent = filter ? (shownCount + " de " + keys.length + " Códigos") : (keys.length + " Códigos Activos");
   }
 
+  // =========================================================================
+  // 8. EXTRACCION Y LECTURA DE ARCHIVOS EXCEL
+  // =========================================================================
   function extractRowsFromSheet(sheet) {
     const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
     if (!matrix || matrix.length === 0) return [];
@@ -345,6 +548,9 @@
     return dataRows;
   }
 
+  // =========================================================================
+  // 9. IMPORTACION DEL ARCHIVO DE HOMOLOGACION
+  // =========================================================================
   function handleDictFileSelected(file) {
     setProgress("Cargando y procesando archivo de homologación...", 30);
     const reader = new FileReader();
@@ -372,6 +578,7 @@
           return null;
         };
 
+        const colCamp = findCol("campana", "campaña", "campaign", "campaignid", "idcampana");
         const colCod = findCol("codvicidial", "codigo", "cod", "code", "codoficial", "status", "estado");
         const colCat = findCol("categoriacenco", "categoria", "category");
         const colTip = findCol("tipificacioncenco", "tipificacion", "tipificación");
@@ -385,10 +592,28 @@
           return;
         }
 
+        const replaceAll = confirm(
+          "Archivo de homologación detectado con " + rows.length + " filas.\n\n" +
+          "¿Deseas REEMPLAZAR todo el diccionario anterior con este archivo?\n\n" +
+          "• Presiona [Aceptar] para REEMPLAZAR (empezar limpio solo con este archivo)\n" +
+          "• Presiona [Cancelar] para COMBINAR (agregar/actualizar sin borrar los demás)"
+        );
+
+        if (replaceAll) {
+          currentDict = {};
+        }
+
         let loadedCount = 0;
         rows.forEach(r => {
           const rawCode = normalize(r[colCod]);
           if (!rawCode) return;
+
+          let rawCamp = "TODAS";
+          if (colCamp && r[colCamp]) {
+            const cStr = cleanIntStr(r[colCamp]);
+            if (cStr) rawCamp = cStr;
+            else if (String(r[colCamp]).trim().toUpperCase() !== "TODAS") rawCamp = String(r[colCamp]).trim().toUpperCase();
+          }
 
           const cat = colCat ? String(r[colCat] || "").trim() : "";
           const tip = colTip ? String(r[colTip] || "").trim() : "";
@@ -396,7 +621,10 @@
           const stat = colStat ? normalize(r[colStat]) : "NO DISPONIBLE";
           const rel = colRel ? normalize(r[colRel]) : "NO";
 
-          currentDict[rawCode] = {
+          const k = makeKey(rawCamp, rawCode);
+          currentDict[k] = {
+            campana: rawCamp,
+            codigo: rawCode,
             categoria: cat || (tip.toLowerCase().includes("encuesta") ? "Contacto" : "No Contacto"),
             tipificacion: tip || rawCode,
             subTipificacion: sub || tip || rawCode,
@@ -424,39 +652,11 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // DRAG & DROP HOMOLOGACIÓN
-  el.dictDropzone.addEventListener("dragover", e => { e.preventDefault(); el.dictDropzone.classList.add("dragover"); });
-  el.dictDropzone.addEventListener("dragleave", () => el.dictDropzone.classList.remove("dragover"));
-  el.dictDropzone.addEventListener("drop", e => {
-    e.preventDefault();
-    el.dictDropzone.classList.remove("dragover");
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleDictFileSelected(e.dataTransfer.files[0]);
-    }
-  });
-  el.dictInput.addEventListener("change", e => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleDictFileSelected(e.target.files[0]);
-    }
-  });
-
-  // DRAG & DROP INFORME DE LLAMADAS
-  el.dropzone.addEventListener("dragover", e => { e.preventDefault(); el.dropzone.classList.add("dragover"); });
-  el.dropzone.addEventListener("dragleave", () => el.dropzone.classList.remove("dragover"));
-  el.dropzone.addEventListener("drop", e => {
-    e.preventDefault();
-    el.dropzone.classList.remove("dragover");
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleSourceFileSelected(e.dataTransfer.files[0]);
-    }
-  });
-  el.sourceInput.addEventListener("change", e => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleSourceFileSelected(e.target.files[0]);
-    }
-  });
-
+  // =========================================================================
+  // 10. LECTURA Y PROCESAMIENTO DEL ARCHIVO FUENTE DE LLAMADAS
+  // =========================================================================
   function handleSourceFileSelected(file) {
+    state.sourceFileName = file.name;
     el.fileInfo.hidden = false;
     el.fileInfo.innerHTML = "📄 <b>Archivo seleccionado:</b> " + file.name + " (" + (file.size / 1024 / 1024).toFixed(2) + " MB)";
     setProgress("Leyendo y analizando archivo...", 20);
@@ -477,7 +677,7 @@
         }
 
         state.rawRows = rows;
-        processSourceData(rows);
+        processSourceData(rows, file.name);
       } catch (err) {
         alert("Error al leer el archivo Excel: " + err.message);
         el.progressPanel.hidden = true;
@@ -486,7 +686,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  function processSourceData(rows) {
+  function processSourceData(rows, fileName = "") {
     setProgress("Detectando campañas, tipificaciones y fecha operacional...", 50);
 
     const sample = rows[0] || {};
@@ -501,6 +701,7 @@
 
     const colCamp = findCol("campaignid", "campaign", "campana", "campanaid", "campaign_id");
     const colHInicio = findCol("horainicio", "call_date", "calldate", "fechainicio");
+    const colFechaAlt = findCol("fecha", "fechallamada", "fecha_llamada", "call_date");
 
     if (!colCamp) {
       alert("No se encontró la columna 'Campaign ID' en el archivo.");
@@ -509,36 +710,53 @@
     }
 
     const campCounts = {};
-    const dateCounts = {};
+    const validDateCounts = {};
 
     rows.forEach(r => {
       const c = cleanIntStr(r[colCamp]);
       if (c) campCounts[c] = (campCounts[c] || 0) + 1;
 
-      if (colHInicio && r[colHInicio]) {
-        const d = parseDateObj(r[colHInicio]);
-        if (d) {
-          const ymd = "" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate());
-          dateCounts[ymd] = (dateCounts[ymd] || 0) + 1;
+      const candidateCols = [colHInicio, colFechaAlt].filter(Boolean);
+      for (const col of candidateCols) {
+        if (r[col]) {
+          const parsed = parseDateObj(r[col]);
+          if (parsed && parsed.hasValidDate && parsed.dateGestion) {
+            validDateCounts[parsed.dateGestion] = (validDateCounts[parsed.dateGestion] || 0) + 1;
+            break;
+          }
         }
       }
     });
 
     state.availableCampaigns = Object.keys(campCounts).map(id => ({ id, count: campCounts[id] })).sort((a,b) => b.count - a.count);
 
-    let domDate = "";
-    let maxDateCount = 0;
-    Object.keys(dateCounts).forEach(d => {
-      if (dateCounts[d] > maxDateCount) {
-        maxDateCount = dateCounts[d];
-        domDate = d;
+    let detectedIso = "";
+    let detectedLabel = "";
+
+    let maxCount = 0;
+    Object.keys(validDateCounts).forEach(iso => {
+      if (validDateCounts[iso] > maxCount) {
+        maxCount = validDateCounts[iso];
+        detectedIso = iso;
+        detectedLabel = "Detectada en Filas (" + maxCount + " llamadas)";
       }
     });
-    if (!domDate) {
-      const now = new Date();
-      domDate = "" + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate());
+
+    if (!detectedIso && fileName) {
+      const fnMatch = fileName.match(/\b(20\d{2})[-_]?(\d{2})[-_]?(\d{2})\b/);
+      if (fnMatch) {
+        detectedIso = fnMatch[1] + "-" + fnMatch[2] + "-" + fnMatch[3];
+        detectedLabel = "Detectada del Archivo";
+      }
     }
-    state.dominantDate = domDate;
+
+    if (!detectedIso) {
+      const now = new Date();
+      detectedIso = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+      detectedLabel = "Fecha de Hoy";
+    }
+
+    setOperationalDate(detectedIso, detectedLabel, false);
 
     const cenco6 = ["91", "107", "96", "106", "108", "109"];
     const foundCenco = state.availableCampaigns.filter(c => cenco6.includes(c.id)).map(c => c.id);
@@ -556,9 +774,6 @@
   }
 
   function renderCampaignCheckboxes() {
-    const formattedDate = state.dominantDate.length === 8 ? (state.dominantDate.slice(6,8) + "/" + state.dominantDate.slice(4,6) + "/" + state.dominantDate.slice(0,4)) : state.dominantDate;
-    el.detectedDateBadge.textContent = "📅 Fecha Detectada: " + formattedDate + " (" + state.dominantDate + ")";
-
     el.campaignCheckboxes.innerHTML = "";
 
     state.availableCampaigns.forEach(c => {
@@ -580,6 +795,9 @@
     });
   }
 
+  // =========================================================================
+  // 11. MATRIZ DE TIPIFICACIONES POR CAMPAÑA ACTIVA
+  // =========================================================================
   function updateTipificationsForActiveCampaigns(selectAllByDefault = false) {
     const rows = state.rawRows;
     if (!rows || rows.length === 0) return;
@@ -598,6 +816,7 @@
     const colTip = findCol("estadotipificacion", "tipificacion", "tipificación", "status", "estado");
 
     const activeCounts = {};
+    const codeCampaigns = {};
 
     rows.forEach(r => {
       const campId = cleanIntStr(r[colCamp]);
@@ -605,17 +824,32 @@
 
       let rawCode = normalize(colTip ? r[colTip] : "");
       if (!rawCode) rawCode = "SIN_CODIGO";
+
       activeCounts[rawCode] = (activeCounts[rawCode] || 0) + 1;
+      if (!codeCampaigns[rawCode]) codeCampaigns[rawCode] = new Set();
+      codeCampaigns[rawCode].add(campId);
     });
 
     const detected = Object.keys(activeCounts).map(code => {
-      const mapped = !!currentDict[code];
-      const item = currentDict[code] || null;
+      const camps = Array.from(codeCampaigns[code] || []);
+      let resolvedItem = null;
+      for (const cid of camps) {
+        const found = resolveTipification(cid, code);
+        if (found) {
+          resolvedItem = found;
+          break;
+        }
+      }
+      if (!resolvedItem) {
+        resolvedItem = resolveTipification("TODAS", code);
+      }
+
       return {
         code,
         count: activeCounts[code],
-        mapped,
-        item
+        campaigns: camps,
+        mapped: !!resolvedItem,
+        item: resolvedItem
       };
     }).sort((a,b) => b.count - a.count);
 
@@ -637,14 +871,20 @@
       el.unmappedWarningBox.hidden = false;
       el.unmappedWarningBox.innerHTML = `
         <span>⚠️ <b>Atención:</b> Se detectaron <b>${unmapped.length}</b> códigos sin homologar en las campañas seleccionadas:</span>
-        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
-          ${unmapped.map(u => `<span class="unmapped-code-pill" title="Clic para homologar ${u.code}">➕ Homologar <b>${u.code}</b> (${u.count})</span>`).join("")}
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
+          ${unmapped.map(u => `
+            <span class="unmapped-code-pill" data-code="${u.code}" data-camps="${u.campaigns.join(',')}" title="Clic para homologar ${u.code}">
+              ➕ Homologar <b>${u.code}</b> (${u.count.toLocaleString()})
+            </span>
+          `).join("")}
         </div>
       `;
       el.unmappedWarningBox.querySelectorAll(".unmapped-code-pill").forEach(pill => {
         pill.addEventListener("click", () => {
-          const codeText = pill.querySelector("b").textContent;
-          openModalWithCode(codeText);
+          const codeText = pill.dataset.code;
+          const campList = (pill.dataset.camps || "").split(",").filter(Boolean);
+          const prefCamp = campList.length === 1 ? campList[0] : "TODAS";
+          openModalWithKey(null, codeText, prefCamp);
         });
       });
     } else {
@@ -670,7 +910,8 @@
           badgeClass = "badge-nocontacto";
           badgeLabel = "No Contacto";
         }
-        desc = item.tipificacion || item.categoria || t.code;
+        const campLabel = item.campana && item.campana !== "TODAS" ? " [Camp " + item.campana + "]" : "";
+        desc = (item.tipificacion || item.categoria || t.code) + campLabel;
       }
 
       chip.className = "tip-chip " + (isChecked ? "checked" : "") + " " + (!isMapped ? "unmapped" : "");
@@ -701,73 +942,37 @@
     });
   }
 
-  el.btnTipAll.addEventListener("click", () => {
-    state.selectedTipifications = new Set(state.detectedTipifications.map(t => t.code));
-    renderTipCheckboxes();
-    el.btnTipAll.classList.add("active");
-    el.btnTipContacted.classList.remove("active");
-    el.btnTipNone.classList.remove("active");
-  });
-
-  el.btnTipContacted.addEventListener("click", () => {
-    const contactCodes = state.detectedTipifications
-      .filter(t => t.item && t.item.categoria === "Contacto")
-      .map(t => t.code);
-    state.selectedTipifications = new Set(contactCodes);
-    renderTipCheckboxes();
-    el.btnTipContacted.classList.add("active");
-    el.btnTipAll.classList.remove("active");
-    el.btnTipNone.classList.remove("active");
-  });
-
-  el.btnTipNone.addEventListener("click", () => {
-    state.selectedTipifications.clear();
-    renderTipCheckboxes();
-    el.btnTipNone.classList.add("active");
-    el.btnTipAll.classList.remove("active");
-    el.btnTipContacted.classList.remove("active");
-  });
-
-  el.btnCenco6.addEventListener("click", () => {
-    const target = new Set(["91", "107", "96", "106", "108", "109"]);
-    state.selectedCampaigns = new Set(state.availableCampaigns.filter(c => target.has(c.id)).map(c => c.id));
-    renderCampaignCheckboxes();
-    updateTipificationsForActiveCampaigns();
-    el.btnCenco6.classList.add("active");
-    el.btnAll.classList.remove("active");
-    el.btnNone.classList.remove("active");
-  });
-
-  el.btnAll.addEventListener("click", () => {
-    state.selectedCampaigns = new Set(state.availableCampaigns.map(c => c.id));
-    renderCampaignCheckboxes();
-    updateTipificationsForActiveCampaigns();
-    el.btnAll.classList.add("active");
-    el.btnCenco6.classList.remove("active");
-    el.btnNone.classList.remove("active");
-  });
-
-  el.btnNone.addEventListener("click", () => {
-    state.selectedCampaigns.clear();
-    renderCampaignCheckboxes();
-    updateTipificationsForActiveCampaigns();
-    el.btnNone.classList.add("active");
-    el.btnCenco6.classList.remove("active");
-    el.btnAll.classList.remove("active");
-  });
-
-  function openModalWithCode(codeToEdit = "") {
+  // =========================================================================
+  // 12. MODAL PARA AGREGAR / EDITAR TIPIFICACION AISLADA POR CAMPANA
+  // =========================================================================
+  function openModalWithKey(keyToEdit = null, prefillCode = "", prefillCamp = "TODAS") {
     if (!el.tipModal) return;
+    state.editingKey = keyToEdit;
+
     el.tipModal.removeAttribute("hidden");
     el.tipModal.hidden = false;
     el.tipModal.classList.add("active");
     el.tipModal.style.display = "flex";
 
-    if (codeToEdit && currentDict[codeToEdit]) {
-      const item = currentDict[codeToEdit];
-      el.tipModalTitle.textContent = "Editar Tipificación: " + codeToEdit;
-      el.modalInputCode.value = codeToEdit;
-      el.modalInputCode.readOnly = true;
+    if (keyToEdit && currentDict[keyToEdit]) {
+      const item = currentDict[keyToEdit];
+      const camp = item.campana || "TODAS";
+      const code = item.codigo || (keyToEdit.includes(":") ? keyToEdit.split(":")[1] : keyToEdit);
+
+      el.tipModalTitle.textContent = "Editar Tipificación: " + code + (camp !== "TODAS" ? " (Campaña " + camp + ")" : " (Universal)");
+
+      const standardCamps = ["TODAS", "91", "107", "96", "106", "108", "109"];
+      if (standardCamps.includes(camp)) {
+        el.modalInputCamp.value = camp;
+        el.modalInputCampCustom.style.display = "none";
+      } else {
+        el.modalInputCamp.value = "CUSTOM";
+        el.modalInputCampCustom.value = camp;
+        el.modalInputCampCustom.style.display = "block";
+      }
+
+      el.modalInputCode.value = code;
+      el.modalInputCode.readOnly = false;
       el.modalInputCat.value = item.categoria || "Contacto";
       el.modalInputTip.value = item.tipificacion || "";
       el.modalInputSubtip.value = item.subTipificacion || item.tipificacion || "";
@@ -775,7 +980,18 @@
       el.modalInputRellamada.value = item.rellamada || "NO";
     } else {
       el.tipModalTitle.textContent = "Agregar / Homologar Tipificación";
-      el.modalInputCode.value = codeToEdit || "";
+
+      const standardCamps = ["TODAS", "91", "107", "96", "106", "108", "109"];
+      if (standardCamps.includes(prefillCamp)) {
+        el.modalInputCamp.value = prefillCamp;
+        el.modalInputCampCustom.style.display = "none";
+      } else {
+        el.modalInputCamp.value = "CUSTOM";
+        el.modalInputCampCustom.value = prefillCamp;
+        el.modalInputCampCustom.style.display = "block";
+      }
+
+      el.modalInputCode.value = prefillCode || "";
       el.modalInputCode.readOnly = false;
       el.modalInputCat.value = "Contacto";
       el.modalInputTip.value = "";
@@ -783,7 +999,11 @@
       el.modalInputStatus.value = "NO DISPONIBLE";
       el.modalInputRellamada.value = "NO";
     }
-    el.modalInputCode.focus();
+
+    setTimeout(() => {
+      if (!el.modalInputCode.value) el.modalInputCode.focus();
+      else el.modalInputTip.focus();
+    }, 100);
   }
 
   function closeModal() {
@@ -792,11 +1012,22 @@
     el.tipModal.hidden = true;
     el.tipModal.classList.remove("active");
     el.tipModal.style.display = "none";
+    state.editingKey = null;
   }
-
   window.closeTipModal = closeModal;
 
   function saveModalTipification() {
+    let campVal = el.modalInputCamp.value;
+    if (campVal === "CUSTOM") {
+      const customVal = cleanIntStr(el.modalInputCampCustom.value);
+      if (!customVal) {
+        alert("Por favor especifica el ID numérico de la campaña personalizada (ej: 23, 136).");
+        el.modalInputCampCustom.focus();
+        return;
+      }
+      campVal = customVal;
+    }
+
     const code = normalize(el.modalInputCode.value);
     const cat = el.modalInputCat.value;
     const tip = el.modalInputTip.value.trim();
@@ -806,14 +1037,24 @@
 
     if (!code) {
       alert("Por favor ingresa el Código Vicidial.");
+      el.modalInputCode.focus();
       return;
     }
     if (!tip) {
       alert("Por favor ingresa la descripción de Tipificación Cencosud.");
+      el.modalInputTip.focus();
       return;
     }
 
-    currentDict[code] = {
+    const newKey = makeKey(campVal, code);
+
+    if (state.editingKey && state.editingKey !== newKey) {
+      delete currentDict[state.editingKey];
+    }
+
+    currentDict[newKey] = {
+      campana: campVal,
+      codigo: code,
       categoria: cat,
       tipificacion: tip,
       subTipificacion: sub,
@@ -823,34 +1064,43 @@
 
     saveDictionaryToStorage();
     renderDictionaryTable();
-    updateDictBadge("Código " + code + " guardado");
+    updateDictBadge("Código " + code + " guardado para Campaña " + campVal);
 
     if (state.rawRows && state.rawRows.length > 0) {
       updateTipificationsForActiveCampaigns();
     }
 
     closeModal();
-    showToast("Tipificación " + code + " homologada correctamente.");
+    showToast("Tipificación " + code + " (" + campVal + ") guardada correctamente.");
   }
 
-  function deleteCode(code) {
-    if (!confirm("¿Estás seguro de eliminar el código '" + code + "' del diccionario?")) return;
-    delete currentDict[code];
+  function deleteCodeByKey(key) {
+    const item = currentDict[key];
+    const label = item ? ("'" + item.codigo + "' de Campaña " + item.campana) : ("'" + key + "'");
+    if (!confirm("¿Estás seguro de eliminar la tipificación " + label + " del diccionario?")) return;
+
+    delete currentDict[key];
     saveDictionaryToStorage();
     renderDictionaryTable();
-    updateDictBadge("Código " + code + " eliminado");
+    updateDictBadge();
     if (state.rawRows && state.rawRows.length > 0) {
       updateTipificationsForActiveCampaigns();
     }
-    showToast("Código " + code + " eliminado.");
+    showToast("Tipificación eliminada.");
   }
 
   function exportDictionaryToExcel() {
-    const codes = Object.keys(currentDict).sort();
-    const data = codes.map(c => {
-      const item = currentDict[c];
+    const keys = Object.keys(currentDict).sort();
+    if (keys.length === 0) {
+      alert("El diccionario está vacío. Agrega o importa tipificaciones antes de exportar.");
+      return;
+    }
+
+    const data = keys.map(k => {
+      const item = currentDict[k] || {};
       return {
-        "COD_VICIDIAL": c,
+        "CAMPAÑA": item.campana || "TODAS",
+        "COD_VICIDIAL": item.codigo || (k.includes(":") ? k.split(":")[1] : k),
         "CATEGORIA_CENCO": item.categoria || "",
         "TIPIFICACION_CENCO": item.tipificacion || "",
         "SUB_TIPIFICACION": item.subTipificacion || item.tipificacion || "",
@@ -861,57 +1111,14 @@
 
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Diccionario_Codigo");
-    XLSX.writeFile(wb, "TIPIFICACIONES_CENCOSUD_CONFIG_" + new Date().toISOString().slice(0,10) + ".xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Diccionario_Oficial");
+    XLSX.writeFile(wb, "TIPIFICACIONES_CENCOSUD_CONFIG_" + state.dominantDateYmd + ".xlsx");
     showToast("Diccionario exportado a Excel.");
   }
 
-  el.btnModalClose.addEventListener("click", closeModal);
-  el.btnModalCancel.addEventListener("click", closeModal);
-  el.btnModalSave.addEventListener("click", saveModalTipification);
-
-  // Cerrar al hacer clic fuera del diálogo
-  if (el.tipModal) {
-    el.tipModal.addEventListener("click", e => {
-      if (e.target === el.tipModal) closeModal();
-    });
-  }
-
-  // Cerrar con Escape
-  document.addEventListener("keydown", e => {
-    if ((e.key === "Escape" || e.keyCode === 27) && el.tipModal && !el.tipModal.hidden && el.tipModal.style.display !== "none") {
-      closeModal();
-    }
-  });
-  el.btnQuickAddTip.addEventListener("click", () => openModalWithCode());
-  el.btnAddTipModal.addEventListener("click", () => openModalWithCode());
-  el.btnDictAdd.addEventListener("click", () => openModalWithCode());
-  el.btnDictExport.addEventListener("click", exportDictionaryToExcel);
-  el.btnDictReset.addEventListener("click", resetDictionary);
-  el.dictSearchInput.addEventListener("input", e => renderDictionaryTable(e.target.value));
-
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
-      btn.classList.add("active");
-      const targetPane = document.getElementById(btn.dataset.tab);
-      if (targetPane) targetPane.classList.add("active");
-    });
-  });
-
-  el.btnProcess.addEventListener("click", () => {
-    if (state.selectedCampaigns.size === 0) {
-      alert("Por favor selecciona al menos una campaña para exportar.");
-      return;
-    }
-    if (state.selectedTipifications.size === 0) {
-      alert("Por favor selecciona al menos una tipificación para entregar.");
-      return;
-    }
-    runTransformation();
-  });
-
+  // =========================================================================
+  // 13. TRANSFORMACION Y GENERACION DE RECORRIDOS (100% FECHA CORREGIDA)
+  // =========================================================================
   function runTransformation() {
     setProgress("Iniciando validación y homologación con filtro de entrega...", 10);
     const rows = state.rawRows;
@@ -943,19 +1150,19 @@
     const has91 = selected.includes("91");
     const has107 = selected.includes("107");
     if (has91 && has107) {
-      groups.push({ ids: ["91", "107"], nombre: "Cencosud EEFF", filename: "Incidencia_Cencosud_EEFF_TZ_" + state.dominantDate + ".csv", expectedPrefix: "113" });
+      groups.push({ ids: ["91", "107"], nombre: "Cencosud EEFF", filename: "Incidencia_Cencosud_EEFF_TZ_" + state.dominantDateYmd + ".csv", expectedPrefix: "113" });
     } else if (has91) {
-      groups.push({ ids: ["91"], nombre: "Cencosud EEFF", filename: "Incidencia_Cencosud_EEFF_TZ_" + state.dominantDate + ".csv", expectedPrefix: "113" });
+      groups.push({ ids: ["91"], nombre: "Cencosud EEFF", filename: "Incidencia_Cencosud_EEFF_TZ_" + state.dominantDateYmd + ".csv", expectedPrefix: "113" });
     } else if (has107) {
-      groups.push({ ids: ["107"], nombre: "Cencosud EEFF", filename: "Incidencia_Cencosud_EEFF_TZ_" + state.dominantDate + ".csv", expectedPrefix: "113" });
+      groups.push({ ids: ["107"], nombre: "Cencosud EEFF", filename: "Incidencia_Cencosud_EEFF_TZ_" + state.dominantDateYmd + ".csv", expectedPrefix: "113" });
     }
 
     selected.filter(c => c !== "91" && c !== "107").forEach(cid => {
       const reg = CAMPAIGN_REGISTRY.find(r => r.ids.includes(cid));
       if (reg) {
-        groups.push({ ids: [cid], nombre: reg.nombre, filename: reg.pattern(state.dominantDate), expectedPrefix: reg.prefix });
+        groups.push({ ids: [cid], nombre: reg.nombre, filename: reg.pattern(state.dominantDateYmd), expectedPrefix: reg.prefix });
       } else {
-        groups.push({ ids: [cid], nombre: "Campaña " + cid, filename: "Incidencia_Cencosud_Campana_" + cid + "_TZ_" + state.dominantDate + ".csv", expectedPrefix: CAMPAIGN_PREFIX_MAP[cid] || "" });
+        groups.push({ ids: [cid], nombre: "Campaña " + cid, filename: "Incidencia_Cencosud_Campana_" + cid + "_TZ_" + state.dominantDateYmd + ".csv", expectedPrefix: CAMPAIGN_PREFIX_MAP[cid] || "" });
       }
     });
 
@@ -1011,28 +1218,40 @@
         const dInicio = parseDateObj(colHInicio ? r[colHInicio] : null);
         const dFin = parseDateObj(colHFin ? r[colHFin] : null);
 
-        const fechaGestion = dInicio ? formatDateGestion(dInicio) : "";
-        const fechaLlamada = dInicio ? formatDateLlamada(dInicio) : "";
-        const inicioLlamada = dInicio ? formatTime(dInicio) : "";
-        let finLlamada = dFin ? formatTime(dFin) : "";
+        let fechaGestion = "";
+        let fechaLlamada = "";
+        let inicioLlamada = "";
+        let finLlamada = "";
         let duracion = 0;
 
-        if (!finLlamada || !dFin) {
+        if (dInicio && dInicio.hasValidDate) {
+          fechaGestion = dInicio.dateGestion;
+          fechaLlamada = dInicio.dateLlamada;
+        } else {
+          fechaGestion = state.dominantDateIso;
+          fechaLlamada = state.dominantDateDmy;
+        }
+
+        inicioLlamada = dInicio ? dInicio.timeStr : "00:00:00";
+
+        if (dFin) {
+          finLlamada = dFin.timeStr;
+          duracion = parseDurationSeconds(colDur ? r[colDur] : null, dInicio, dFin);
+        } else {
           finLlamada = inicioLlamada;
           duracion = 0;
-        } else {
-          duracion = parseDurationSeconds(colDur ? r[colDur] : null, dInicio, dFin);
         }
+
+        const resolved = resolveTipification(campId, rawStatus);
 
         let categoria = "No Contacto";
         let tipificacion = "No Contestan";
         let subTip = "No Contestan";
 
-        if (currentDict[rawStatus]) {
-          const dictItem = currentDict[rawStatus];
-          categoria = dictItem.categoria || "No Contacto";
-          tipificacion = dictItem.tipificacion || rawStatus;
-          subTip = dictItem.subTipificacion || tipificacion;
+        if (resolved) {
+          categoria = resolved.categoria || "No Contacto";
+          tipificacion = resolved.tipificacion || rawStatus;
+          subTip = resolved.subTipificacion || tipificacion;
         } else if (["NAN", "NONE", "DROP", "N", "SIN_CODIGO"].includes(rawStatus)) {
           categoria = "No Contacto";
           tipificacion = "No Contestan";
@@ -1110,6 +1329,9 @@
     el.progressPanel.hidden = true;
   }
 
+  // =========================================================================
+  // 14. PRESENTACION DE RESULTADOS Y AUDITORIA
+  // =========================================================================
   function renderResults(manifest) {
     el.resultsSection.hidden = false;
 
@@ -1133,7 +1355,7 @@
     el.tabAuditBtn.textContent = "🛡️ Auditoría de Descartes (" + totalDiscards.toLocaleString() + ")";
 
     el.summaryPills.innerHTML = `
-      <span class="pill-blue">📅 Operación: ${state.dominantDate}</span>
+      <span class="pill-blue">📅 Operación: ${state.dominantDateIso}</span>
       <span class="pill-green">✓ ${totalValid.toLocaleString()} Registros Oficiales Válidos</span>
       ${totalExclTip > 0 ? `<span class="pill-purple">✂️ ${totalExclTip.toLocaleString()} Excluidos por Filtro Tipificación</span>` : ""}
       ${totalExclPrefix > 0 ? `<span class="pill-orange">⚠️ ${totalExclPrefix.toLocaleString()} Fuera por Prefijo ID</span>` : ""}
@@ -1168,7 +1390,7 @@
     });
     zip.generateAsync({ type: "blob" }).then(blob => {
       state.zipBlob = blob;
-      state.zipName = "Recorridos_Cencosud_Oficiales_" + state.dominantDate + ".zip";
+      state.zipName = "Recorridos_Cencosud_Oficiales_" + state.dominantDateYmd + ".zip";
     });
 
     el.btnZipDownload.onclick = () => {
@@ -1296,6 +1518,164 @@
       URL.revokeObjectURL(url);
     }, 100);
   }
+
+  // =========================================================================
+  // 15. LISTENERS Y EVENTOS DEL DOM
+  // =========================================================================
+  el.dictDropzone.addEventListener("dragover", e => { e.preventDefault(); el.dictDropzone.classList.add("dragover"); });
+  el.dictDropzone.addEventListener("dragleave", () => el.dictDropzone.classList.remove("dragover"));
+  el.dictDropzone.addEventListener("drop", e => {
+    e.preventDefault();
+    el.dictDropzone.classList.remove("dragover");
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleDictFileSelected(e.dataTransfer.files[0]);
+    }
+  });
+  el.dictInput.addEventListener("change", e => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleDictFileSelected(e.target.files[0]);
+    }
+  });
+
+  el.dropzone.addEventListener("dragover", e => { e.preventDefault(); el.dropzone.classList.add("dragover"); });
+  el.dropzone.addEventListener("dragleave", () => el.dropzone.classList.remove("dragover"));
+  el.dropzone.addEventListener("drop", e => {
+    e.preventDefault();
+    el.dropzone.classList.remove("dragover");
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleSourceFileSelected(e.dataTransfer.files[0]);
+    }
+  });
+  el.sourceInput.addEventListener("change", e => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleSourceFileSelected(e.target.files[0]);
+    }
+  });
+
+  if (el.opDateInput) {
+    el.opDateInput.addEventListener("change", e => {
+      const val = e.target.value;
+      if (val) {
+        setOperationalDate(val, "Personalizada", true);
+        showToast("Fecha de llamadas actualizada a: " + val);
+      }
+    });
+  }
+
+  el.btnTipAll.addEventListener("click", () => {
+    state.selectedTipifications = new Set(state.detectedTipifications.map(t => t.code));
+    renderTipCheckboxes();
+    el.btnTipAll.classList.add("active");
+    el.btnTipContacted.classList.remove("active");
+    el.btnTipNone.classList.remove("active");
+  });
+
+  el.btnTipContacted.addEventListener("click", () => {
+    const contactCodes = state.detectedTipifications
+      .filter(t => t.item && t.item.categoria === "Contacto")
+      .map(t => t.code);
+    state.selectedTipifications = new Set(contactCodes);
+    renderTipCheckboxes();
+    el.btnTipContacted.classList.add("active");
+    el.btnTipAll.classList.remove("active");
+    el.btnTipNone.classList.remove("active");
+  });
+
+  el.btnTipNone.addEventListener("click", () => {
+    state.selectedTipifications.clear();
+    renderTipCheckboxes();
+    el.btnTipNone.classList.add("active");
+    el.btnTipAll.classList.remove("active");
+    el.btnTipContacted.classList.remove("active");
+  });
+
+  el.btnCenco6.addEventListener("click", () => {
+    const target = new Set(["91", "107", "96", "106", "108", "109"]);
+    state.selectedCampaigns = new Set(state.availableCampaigns.filter(c => target.has(c.id)).map(c => c.id));
+    renderCampaignCheckboxes();
+    updateTipificationsForActiveCampaigns();
+    el.btnCenco6.classList.add("active");
+    el.btnAll.classList.remove("active");
+    el.btnNone.classList.remove("active");
+  });
+
+  el.btnAll.addEventListener("click", () => {
+    state.selectedCampaigns = new Set(state.availableCampaigns.map(c => c.id));
+    renderCampaignCheckboxes();
+    updateTipificationsForActiveCampaigns();
+    el.btnAll.classList.add("active");
+    el.btnCenco6.classList.remove("active");
+    el.btnNone.classList.remove("active");
+  });
+
+  el.btnNone.addEventListener("click", () => {
+    state.selectedCampaigns.clear();
+    renderCampaignCheckboxes();
+    updateTipificationsForActiveCampaigns();
+    el.btnNone.classList.add("active");
+    el.btnCenco6.classList.remove("active");
+    el.btnAll.classList.remove("active");
+  });
+
+  el.btnModalClose.addEventListener("click", closeModal);
+  el.btnModalCancel.addEventListener("click", closeModal);
+  el.btnModalSave.addEventListener("click", saveModalTipification);
+
+  if (el.modalInputCamp) {
+    el.modalInputCamp.addEventListener("change", e => {
+      if (e.target.value === "CUSTOM") {
+        el.modalInputCampCustom.style.display = "block";
+        el.modalInputCampCustom.focus();
+      } else {
+        el.modalInputCampCustom.style.display = "none";
+      }
+    });
+  }
+
+  if (el.tipModal) {
+    el.tipModal.addEventListener("click", e => {
+      if (e.target === el.tipModal) closeModal();
+    });
+  }
+
+  document.addEventListener("keydown", e => {
+    if ((e.key === "Escape" || e.keyCode === 27) && el.tipModal && !el.tipModal.hidden && el.tipModal.style.display !== "none") {
+      closeModal();
+    }
+  });
+
+  el.btnQuickAddTip.addEventListener("click", () => openModalWithKey());
+  if (el.btnQuickClearDict) el.btnQuickClearDict.addEventListener("click", clearAllTipifications);
+  if (el.btnQuickDefaultDict) el.btnQuickDefaultDict.addEventListener("click", loadDefaultTipifications);
+  el.btnAddTipModal.addEventListener("click", () => openModalWithKey());
+
+  el.btnDictAdd.addEventListener("click", () => openModalWithKey());
+  if (el.btnDictClearAll) el.btnDictClearAll.addEventListener("click", clearAllTipifications);
+  if (el.btnDictDefault) el.btnDictDefault.addEventListener("click", loadDefaultTipifications);
+  el.btnDictExport.addEventListener("click", exportDictionaryToExcel);
+  el.dictSearchInput.addEventListener("input", e => renderDictionaryTable(e.target.value));
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      const targetPane = document.getElementById(btn.dataset.tab);
+      if (targetPane) targetPane.classList.add("active");
+    });
+  });
+
+  el.btnProcess.addEventListener("click", () => {
+    if (state.selectedCampaigns.size === 0) {
+      alert("Por favor selecciona al menos una campaña para exportar.");
+      return;
+    }
+    if (state.selectedTipifications.size === 0) {
+      alert("Por favor selecciona al menos una tipificación para entregar.");
+      return;
+    }
+    runTransformation();
+  });
 
   initDictionary();
   renderDictionaryTable();

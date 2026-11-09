@@ -1002,3 +1002,133 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* NUEVOS ESTILOS PARA FECHA Y TIPOS DE BOTONES */
+.dict-quick-btns {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
+}
+
+.button.mini {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  border-radius: 6px;
+}
+
+.button.small {
+  padding: 6px 14px;
+  font-size: 12.5px;
+  border-radius: 8px;
+}
+
+.button.secondary {
+  background: #F1F5F9;
+  color: #092340;
+  border: 1px solid #CBD5E1;
+}
+.button.secondary:hover {
+  background: #E2E8F0;
+  border-color: #94A3B8;
+}
+
+.button.danger {
+  background: #EF4444;
+  color: #FFFFFF;
+  border: 1px solid #DC2626;
+}
+.button.danger:hover {
+  background: #DC2626;
+}
+
+.button.danger-outline {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+.button.danger-outline:hover {
+  background: #FEE2E2;
+  border-color: #F87171;
+}
+
+.date-control-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1.5px solid #0077C2;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #092340;
+  box-shadow: 0 2px 6px rgba(0, 119, 194, 0.12);
+}
+
+.date-control-box label {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.date-picker-input {
+  border: 1px solid #94A3B8;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #092340;
+  background: #F8FAFC;
+  outline: none;
+  cursor: pointer;
+}
+.date-picker-input:focus {
+  border-color: #0077C2;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(0, 119, 194, 0.2);
+}
+
+.date-source-hint {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #DCFCE7;
+  color: #15803D;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.date-source-hint.manual {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.tag-camp {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 6px;
+  text-align: center;
+}
+.tag-camp-todas {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+}
+.tag-camp-spec {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+.dict-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748B;
+}
+.dict-empty-state h4 {
+  color: #092340;
+  font-size: 16px;
+  margin-bottom: 8px;
+}

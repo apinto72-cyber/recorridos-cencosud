@@ -67,7 +67,9 @@
             <span class="dot-green"></span>
             <span id="dict-status-text"><b>Diccionario Oficial activo:</b> 26 códigos Vicidial</span>
             <div class="dict-quick-btns">
-              <button id="btn-quick-add-tip" class="button mini secondary" type="button">➕ Agregar Código</button>
+              <button id="btn-quick-add-tip" class="button mini secondary" type="button">➕ Agregar</button>
+              <button id="btn-quick-clear-dict" class="button mini danger-outline" type="button" title="Eliminar todas las tipificaciones actuales">🗑️ Vaciar Todo</button>
+              <button id="btn-quick-default-dict" class="button mini secondary" type="button" title="Cargar los 26 códigos base">↺ 26 Base</button>
             </div>
           </div>
         </div>
@@ -83,7 +85,11 @@
           <button id="btn-all" class="button pill" type="button">Seleccionar Todas</button>
           <button id="btn-none" class="button pill" type="button">Limpiar Filtro</button>
         </div>
-        <div class="date-badge" id="detected-date-badge">📅 Fecha Detectada: -</div>
+        <div class="date-control-box">
+          <label for="op-date-input">📅 Fecha de Llamadas:</label>
+          <input type="date" id="op-date-input" class="date-picker-input" title="Fecha operacional utilizada para FECHA DE GESTIÓN y FECHALLAMADA. Puedes cambiarla si lo deseas." />
+          <span class="date-source-hint" id="date-source-hint">Detectada</span>
+        </div>
       </div>
 
       <div id="campaign-checkboxes" class="campaign-grid"></div>
@@ -220,14 +226,16 @@
           </div>
           <div class="dict-actions-right">
             <button id="btn-dict-add" class="button small primary" type="button">➕ Agregar Código</button>
+            <button id="btn-dict-clear-all" class="button small danger" type="button">🗑️ Eliminar Todas las Tipificaciones</button>
+            <button id="btn-dict-default" class="button small secondary" type="button">↺ Cargar 26 Base Oficiales</button>
             <button id="btn-dict-export" class="button small secondary" type="button">📥 Exportar a Excel (.xlsx)</button>
-            <button id="btn-dict-reset" class="button small danger-outline" type="button">↺ Restablecer Base</button>
           </div>
         </div>
         <div class="table-container">
           <table class="data-table" id="dict-table">
             <thead>
               <tr>
+                <th>CAMPAÑA</th>
                 <th>COD VICIDIAL</th>
                 <th>CATEGORÍA CENCOSUD</th>
                 <th>TIPIFICACIÓN CENCOSUD</th>
@@ -252,6 +260,20 @@
         <button id="btn-modal-close" class="modal-close" type="button" onclick="if (window.closeTipModal) { window.closeTipModal(); } else { document.getElementById('tip-modal').style.display='none'; document.getElementById('tip-modal').hidden=true; }">&times;</button>
       </div>
       <div class="modal-body">
+        <div class="form-group">
+          <label for="modal-input-camp">Campaña a la que Aplica (*)</label>
+          <select id="modal-input-camp">
+            <option value="TODAS">⭐ TODAS (Universal - Aplica si no hay específica)</option>
+            <option value="91">Campaña 91 (EEFF)</option>
+            <option value="107">Campaña 107 (EEFF Foco)</option>
+            <option value="96">Campaña 96 (APP)</option>
+            <option value="106">Campaña 106 (Totem)</option>
+            <option value="108">Campaña 108 (Call Center)</option>
+            <option value="109">Campaña 109 (Web)</option>
+            <option value="CUSTOM">Otra campaña (Especificar ID)...</option>
+          </select>
+          <input type="text" id="modal-input-camp-custom" placeholder="Ingresa ID numérico de campaña (ej: 23, 136)" style="display:none; margin-top:6px;" />
+        </div>
         <div class="form-group">
           <label for="modal-input-code">Código Vicidial / Reporte (*)</label>
           <input type="text" id="modal-input-code" placeholder="Ej: ENTREV, N, TELOCU..." />
