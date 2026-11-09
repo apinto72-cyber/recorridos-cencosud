@@ -710,7 +710,11 @@
 
   function openTipModal(codeToEdit = "") {
     if (!el.tipModal) return;
+    el.tipModal.removeAttribute("hidden");
     el.tipModal.hidden = false;
+    el.tipModal.classList.add("active");
+    el.tipModal.style.display = "flex";
+
     if (codeToEdit && currentCatalog[codeToEdit]) {
       const item = currentCatalog[codeToEdit];
       el.tipModalTitle.textContent = `Editar Tipificación: ${codeToEdit}`;
@@ -731,8 +735,14 @@
   }
 
   function closeTipModal() {
-    if (el.tipModal) el.tipModal.hidden = true;
+    if (!el.tipModal) return;
+    el.tipModal.setAttribute("hidden", "");
+    el.tipModal.hidden = true;
+    el.tipModal.classList.remove("active");
+    el.tipModal.style.display = "none";
   }
+
+  window.closeTipModal = closeTipModal;
 
   function saveTipModal() {
     const code = normalizeCode(el.modalInputCode.value);
@@ -756,6 +766,18 @@
   if (el.btnModalClose) el.btnModalClose.addEventListener("click", closeTipModal);
   if (el.btnModalCancel) el.btnModalCancel.addEventListener("click", closeTipModal);
   if (el.btnModalSave) el.btnModalSave.addEventListener("click", saveTipModal);
+
+  if (el.tipModal) {
+    el.tipModal.addEventListener("click", e => {
+      if (e.target === el.tipModal) closeTipModal();
+    });
+  }
+
+  document.addEventListener("keydown", e => {
+    if ((e.key === "Escape" || e.keyCode === 27) && el.tipModal && !el.tipModal.hidden && el.tipModal.style.display !== "none") {
+      closeTipModal();
+    }
+  });
 
   window.MapfreProcessor = Object.freeze({ CATALOG, buildSourceIndex, processTarget, normalizeId, parseDateTime });
 

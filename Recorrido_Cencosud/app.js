@@ -757,7 +757,12 @@
   });
 
   function openModalWithCode(codeToEdit = "") {
+    if (!el.tipModal) return;
+    el.tipModal.removeAttribute("hidden");
     el.tipModal.hidden = false;
+    el.tipModal.classList.add("active");
+    el.tipModal.style.display = "flex";
+
     if (codeToEdit && currentDict[codeToEdit]) {
       const item = currentDict[codeToEdit];
       el.tipModalTitle.textContent = "Editar Tipificación: " + codeToEdit;
@@ -782,8 +787,14 @@
   }
 
   function closeModal() {
+    if (!el.tipModal) return;
+    el.tipModal.setAttribute("hidden", "");
     el.tipModal.hidden = true;
+    el.tipModal.classList.remove("active");
+    el.tipModal.style.display = "none";
   }
+
+  window.closeTipModal = closeModal;
 
   function saveModalTipification() {
     const code = normalize(el.modalInputCode.value);
@@ -858,6 +869,20 @@
   el.btnModalClose.addEventListener("click", closeModal);
   el.btnModalCancel.addEventListener("click", closeModal);
   el.btnModalSave.addEventListener("click", saveModalTipification);
+
+  // Cerrar al hacer clic fuera del diálogo
+  if (el.tipModal) {
+    el.tipModal.addEventListener("click", e => {
+      if (e.target === el.tipModal) closeModal();
+    });
+  }
+
+  // Cerrar con Escape
+  document.addEventListener("keydown", e => {
+    if ((e.key === "Escape" || e.keyCode === 27) && el.tipModal && !el.tipModal.hidden && el.tipModal.style.display !== "none") {
+      closeModal();
+    }
+  });
   el.btnQuickAddTip.addEventListener("click", () => openModalWithCode());
   el.btnAddTipModal.addEventListener("click", () => openModalWithCode());
   el.btnDictAdd.addEventListener("click", () => openModalWithCode());

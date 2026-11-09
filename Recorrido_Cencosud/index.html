@@ -245,11 +245,11 @@
   </main>
 
   <!-- MODAL AGREGAR / EDITAR TIPIFICACIÓN -->
-  <div id="tip-modal" class="modal-overlay" hidden>
+  <div id="tip-modal" class="modal-overlay" hidden style="display: none;">
     <div class="modal-box">
       <div class="modal-header">
         <h3 id="tip-modal-title">Agregar / Homologar Tipificación</h3>
-        <button id="btn-modal-close" class="modal-close" type="button">&times;</button>
+        <button id="btn-modal-close" class="modal-close" type="button" onclick="if (window.closeTipModal) { window.closeTipModal(); } else { document.getElementById('tip-modal').style.display='none'; document.getElementById('tip-modal').hidden=true; }">&times;</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -289,7 +289,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button id="btn-modal-cancel" class="button secondary" type="button">Cancelar</button>
+        <button id="btn-modal-cancel" class="button secondary" type="button" onclick="if (window.closeTipModal) { window.closeTipModal(); } else { document.getElementById('tip-modal').style.display='none'; document.getElementById('tip-modal').hidden=true; }">Cancelar</button>
         <button id="btn-modal-save" class="button primary" type="button">Guardar Tipificación</button>
       </div>
     </div>
